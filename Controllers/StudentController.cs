@@ -93,6 +93,21 @@ public class AuthController : ControllerBase
         }
     }
 
+    [HttpGet("{username}/{password}")]
+    public ActionResult<Auth> GetByLogin(string username, string password)
+    {
+        var auth = _service.GetByLogin(username, password);
+
+        if(auth is not null)
+        {
+            return auth;
+        }
+        else
+        {
+            return NotFound();
+        }
+    }
+
     [HttpPost]
     public IActionResult Create(Auth newAuth)
     {

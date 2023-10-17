@@ -1,4 +1,6 @@
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Kursach.Models;
 
@@ -13,7 +15,7 @@ public class Student
     public int Id { get; set; }
     public int age { get; set; }
     [Required]
-    public DateTime admissionTime { get; set; }
+    public string admissionTime { get; set; }
     public string contactMail { get; set; }
     public string contactPhone { get; set; }
 }
@@ -28,4 +30,6 @@ public class Auth
     public string password { get; set; }
     [Required]
     public int AuthId { get; set; }
+    [Required]
+    public int type { get; set; }
 }

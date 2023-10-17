@@ -66,6 +66,11 @@ public class AuthService
         return _context.Auths .AsNoTracking() .SingleOrDefault(p => p.AuthId == id);
     }
 
+    public Auth? GetByLogin(string login, string password)
+    {
+        return _context.Auths .AsNoTracking() .SingleOrDefault(p => (p.username == login && p.password == password));
+    }
+
     public Auth Add(Auth auth)
     {
         _context.Auths.Add(auth);
