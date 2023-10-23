@@ -15,6 +15,17 @@ builder.Services.AddSqlite<AuthContext>("Data source = Kursach.db");
 builder.Services.AddScoped<StudentService>();
 builder.Services.AddScoped<AuthService>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -28,6 +39,8 @@ app.UseAuthorization();
 app.MapRazorPages();
 
 app.MapControllers();
+
+app.UseCors("AllowAllOrigins");
 
 app.CreateDbIfNotExists();
 
