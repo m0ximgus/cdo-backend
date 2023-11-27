@@ -24,9 +24,9 @@ public class Authorization
 
 
     //Nav
-    //public IList<Student> Students { get; } = new List<Student>();
-    //public IList<Teacher> Teachers { get; } = new List<Teacher>();
-    //public IList<Employee> Employees { get; } = new List<Employee>();
+    public Student? Student { get; }
+    public Teacher? Teacher { get; }
+    public Employee? Employee { get; }
 }
 
 [Table("Employees")]
@@ -42,11 +42,11 @@ public class Employee
 
     //FK
     public int? authToken { get; set; }
-    //[ForeignKey("authToken")]
-    //public Authorization Authorizations { get; set;}
+    [ForeignKey("authToken")]
+    public Authorization? Authorizations { get; set; } = null;
     public int? jobID { get; set; }
-    //[ForeignKey("jobID")]
-    //public JobTitle JobTitles { get; set; }
+    [ForeignKey("jobID")]
+    public JobTitle? JobTitles { get; set; } = null;
 }
 
 [Table("Groups")]
@@ -59,8 +59,11 @@ public class Group
     public string groupName { get; set; }
 
     //Nav
-    //public IList<Student> Students { get; } = new List<Student>();
-    //public IList<Lesson> Lessons { get; } = new List<Lesson>();
+    public ICollection<Student> Students { get; } = new List<Student>();
+    public List<Lesson> Lessons { get; } = new();
+    public List<Subject> Subjects { get; } = new();
+    public List<Teacher> Teachers { get; } = new();
+    public Journal? Journal { get; }
 }
 
 [Table("JobTitles")]
@@ -75,11 +78,11 @@ public class JobTitle
     public int jobID { get; set; }
 
     //Nav
-    //public IList<Teacher> Teachers { get; } = new List<Teacher>();
-    //public IList<Employee> Employees { get; } = new List<Employee>();
+    public Teacher? Teacher { get; }
+    public Employee? Employee { get; }
 }
 
-[PrimaryKey(nameof(groupID), nameof(teacherID))]
+[PrimaryKey(nameof(groupID), nameof(studentID))]
 [Table("Journal")]
 public class Journal
 {
@@ -87,12 +90,12 @@ public class Journal
 
     //FK
     public int? groupID { get; set; }
-   // [ForeignKey("groupID")]
-    //public Group Group { get; set; }
+    [ForeignKey("groupID")]
+    public Group? Group { get; set; } = null!;
 
-    public int? teacherID { get; set; }
-   // [ForeignKey("teacherID")]
-    //public Teacher Teacher { get; set; }
+    public int? studentID { get; set; }
+    [ForeignKey("studentID")]
+    public Student? Students { get; set; } = null;
 }
 
 [PrimaryKey(nameof(groupID), nameof(teacherID), nameof(subjectID))]
@@ -104,16 +107,16 @@ public class Lesson
 
     //FK
     public int? groupID { get; set; }
-   // [ForeignKey("groupID")]
-   // public Group Group { get; set; }
+    [ForeignKey("groupID")]
+    public Group? Group { get; set; } = null;
 
     public int? teacherID { get; set; }
-   // [ForeignKey("teacherID")]
-  //  public Teacher Teacher { get; set; }
+    [ForeignKey("teacherID")]
+    public Teacher? Teacher { get; set; } = null;
 
     public int? subjectID { get; set; }
-   // [ForeignKey("subjectID")]
-   // public Subject Subject { get; set; }
+    [ForeignKey("subjectID")]
+    public Subject? Subject { get; set; } = null;
 
 }
 
@@ -130,8 +133,8 @@ public class Payment
 
     //FK
     public int? studentID { get; set; }
-  //  [ForeignKey("studentID")]
-   // public Student Student { get; set;}
+    [ForeignKey("studentID")]
+    public Student? Student { get; set; } = null;
 }
 
 [Table("Students")]
@@ -152,14 +155,16 @@ public class Student
 
     //FK
     public int? groupID { get; set; }
-   // [ForeignKey("groupID")]
-   // public Group Group { get; set;}
+    [ForeignKey("groupID")]
+    public Group? Group { get; set;} = null;
 
     public int? authToken { get; set; }
-   // [ForeignKey("authToken")]
-   // public Authorization Authorizations { get; set; }
-    ////Nav
-    public IList<Payment> Payments { get; } = new List<Payment>();
+    [ForeignKey("authToken")]
+    public Authorization? Authorizations { get; set; } = null;
+
+    //Nav
+    public ICollection<Payment> Payments { get; } = new List<Payment>();
+    public ICollection<Journal> Journal { get; } = new List<Journal>();
 }
 
 [Table("Subjects")]
@@ -167,13 +172,14 @@ public class Subject
 {
     [Required]
     public string subjectName { get; set; }
-    [Required]
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int subjectID { get; set; }
 
     //Nav
-   // public IList<Lesson> Lessons { get; } = new List<Lesson>();
+    public List<Lesson> Lessons { get; } = new();
+    public List<Group> Groups { get; } = new();
+    public List<Teacher> Teachers { get; } = new();
 }
 
 [Table("Teachers")]
@@ -189,13 +195,15 @@ public class Teacher
 
     //FK
     public int? authToken { get; set; }
-   // [ForeignKey("authToken")]
-   // public Authorization Authorizations { get; set;}
+    [ForeignKey("authToken")]
+    public Authorization? Authorizations { get; set; } = null;
 
     public int? jobID { get; set; }
-    //[ForeignKey("jobID")]
-    //public JobTitle JobTitles { get; set; }
+    [ForeignKey("jobID")]
+    public JobTitle? JobTitles { get; set; } = null;
 
     //Nav
-    //public IList<Lesson> Lessons { get; set; } = new List<Lesson>();
+    public List<Lesson> Lessons { get; } = new();
+    public List<Group> Groups { get; } = new();
+    public List<Subject> Subjects { get; } = new();
 }

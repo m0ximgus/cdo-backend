@@ -1,0 +1,75 @@
+///////////////////////////////Authorization///////////////////////
+{
+  "login": "ivanovivan",
+  "password": "123456",
+  "type": "student"
+}
+
+//////////////////////////////Group////////////////////////////////
+{
+  "groupName": "ВТ-120"
+}
+
+//////////////////////////////JobTitle/////////////////////////////
+{
+  "jobName": "Администратор",
+  "salary": 50000
+}
+
+/////////////////////////////Subject////////////////////////////////
+{
+  "subjectName": "Программирование"
+}
+
+////////////////////////////Employee////////////////////////////////
+{
+  "fullNameEmployee": "Романов Роман Романович",
+  "contactMailEmployee": "romanov@pochta.ez",
+  "contactPhoneEmployee": "8-800-XXX-XX-XX",
+  "authToken": 2,
+  "jobID": 1
+}
+
+///////////////////////////Student//////////////////////////////////
+{
+  "fullNameStudent": "Иванов Иван Иванович",
+  "age": "2001-08-05",
+  "enrollmentDate": "2020-08-25",
+  "contactMailStudent": "ivanov@pochta.ez",
+  "contactPhoneStudent": "8-800-XXX-XX-XX",
+  "gender": true,
+  "groupID": 1,
+  "authToken": 1
+}
+
+//////////////////////////Teacher///////////////////////////////////
+{
+  "fullNameTeacher": "Дмитриев Дмитрий Дмитриевич",
+  "contactMailTeacher": "dmitriev@pochta.ez",
+  "contactPhoneTeacher": "8-800-XXX-XX-XX",
+  "authToken": 3,
+  "jobID": 2
+}
+
+//////////////////////////Journal///////////////////////////////////
+{
+  "mark": 5,
+  "groupID": 1,
+  "studentID": 1
+}
+
+//////////////////////////Lesson////////////////////////////////////
+{
+  "classroom": "404-2",
+  "groupID": 1,
+  "teacherID": 1,
+  "subjectID": 1
+}
+
+//////////////////////////Payment///////////////////////////////////
+{
+  "paymentType": "Выплата стипендии",
+  "paymentCost": 5000,
+  "paymentDate": "2023-11-27T11:57:58.274Z",
+  "studentID": 1
+}

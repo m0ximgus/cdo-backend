@@ -139,3 +139,4 @@ C:\Sharp-Projects\Kursach4\Kursach\Kursach\obj\Debug\net8.0\refint\Kursach.dll
 C:\Sharp-Projects\Kursach4\Kursach\Kursach\obj\Debug\net8.0\Kursach.pdb
 C:\Sharp-Projects\Kursach4\Kursach\Kursach\obj\Debug\net8.0\Kursach.genruntimeconfig.cache
 C:\Sharp-Projects\Kursach4\Kursach\Kursach\obj\Debug\net8.0\ref\Kursach.dll
+C:\Sharp-Projects\Kursach4\Kursach\Kursach\obj\Debug\net8.0\Kursach.sourcelink.json
