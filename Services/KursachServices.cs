@@ -1,6 +1,7 @@
 ﻿using Kursach.Models;
 using Kursach.Data;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace Kursach.Services;
 public class AuthorizationService
@@ -101,6 +102,10 @@ public class EmployeeService
         return empContext.Employees.AsNoTracking().SingleOrDefault(p => p.employeeID == id);
     }
 
+    public IEnumerable<Employee>? GetByJobId(int id)
+    {
+        return empContext.Employees.AsNoTracking().ToList().Where(p => p.jobID == id);
+    }
 
     public Employee Add(Employee employee)
     {
@@ -108,6 +113,54 @@ public class EmployeeService
         empContext.SaveChanges();
 
         return employee;
+    }
+
+    public void nameUpdate(int id, string newName)
+    {
+        var employeeToUpdate = empContext.Employees.Find(id);
+
+        if (employeeToUpdate is null || newName is null)
+            throw new InvalidOperationException("There some problem.");
+
+        employeeToUpdate.fullNameEmployee = newName;
+
+        empContext.SaveChanges();
+    }
+
+    public void jobUpdate(int id, string newJob)
+    {
+        var employeeToUpdate = empContext.Employees.Find(id);
+
+        if (employeeToUpdate is null || newJob is null)
+            throw new InvalidOperationException("There some problem.");
+
+        employeeToUpdate.jobID = Int32.Parse(newJob);
+
+        empContext.SaveChanges();
+    }
+
+    public void phoneUpdate(int id, string newPhone)
+    {
+        var employeeToUpdate = empContext.Employees.Find(id);
+
+        if (employeeToUpdate is null || newPhone is null)
+            throw new InvalidOperationException("There some problem.");
+
+        employeeToUpdate.contactPhoneEmployee = newPhone;
+
+        empContext.SaveChanges();
+    }
+
+    public void mailUpdate(int id, string newMail)
+    {
+        var employeeToUpdate = empContext.Employees.Find(id);
+
+        if (employeeToUpdate is null || newMail is null)
+            throw new InvalidOperationException("There some problem.");
+
+        employeeToUpdate.contactMailEmployee = newMail;
+
+        empContext.SaveChanges();
     }
 
     public void Delete(int id)
@@ -147,6 +200,18 @@ public class GroupService
         groupContext.SaveChanges();
 
         return employee;
+    }
+
+    public void nameUpdate(int id, string newName)
+    {
+        var groupToUpdate = groupContext.Groups.Find(id);
+
+        if (groupToUpdate is null || newName is null)
+            throw new InvalidOperationException("There some problem.");
+
+        groupToUpdate.groupName = newName;
+
+        groupContext.SaveChanges();
     }
 
     public void Delete(int id)
@@ -197,6 +262,30 @@ public class JobTitleService
             jobTitleContext.SaveChanges();
         }
     }
+
+    public void nameUpdate(int id, string newName)
+    {
+        var jobToUpdate = jobTitleContext.JobTitles.Find(id);
+
+        if (jobToUpdate is null || newName is null)
+            throw new InvalidOperationException("There some problem.");
+
+        jobToUpdate.jobName = newName;
+
+        jobTitleContext.SaveChanges();
+    }
+
+    public void salaryUpdate(int id, string newSalary)
+    {
+        var jobToUpdate = jobTitleContext.JobTitles.Find(id);
+
+        if (jobToUpdate is null || newSalary is null)
+            throw new InvalidOperationException("There some problem.");
+
+        jobToUpdate.salary = Int32.Parse(newSalary);
+
+        jobTitleContext.SaveChanges();
+    }
 }
 
 public class JournalService
@@ -213,11 +302,10 @@ public class JournalService
         return journalContext.Journals.AsNoTracking().ToList();
     }
 
-    public Journal? GetById(int id)
+    public IEnumerable<Journal>? GetById(int id)
     {
-        return journalContext.Journals.AsNoTracking().SingleOrDefault(p => p.groupID == id);
+        return journalContext.Journals.AsNoTracking().ToList().Where(p => p.groupID == id);
     }
-
 
     public Journal Add(Journal journal)
     {
@@ -225,6 +313,18 @@ public class JournalService
         journalContext.SaveChanges();
 
         return journal;
+    }
+
+    public void markUpdate(int id, string newMark)
+    {
+        var journalToUpdate = journalContext.Journals.Find(id);
+
+        if (journalToUpdate is null || newMark is null)
+            throw new InvalidOperationException("There some problem.");
+
+        journalToUpdate.mark = Int32.Parse(newMark);
+
+        journalContext.SaveChanges();
     }
 
     public void Delete(int id)
@@ -264,6 +364,18 @@ public class LessonService
         lessonContext.SaveChanges();
 
         return employee;
+    }
+
+    public void classUpdate(int id, string newClass)
+    {
+        var lessonToUpdate = lessonContext.Lessons.Find(id);
+
+        if (lessonToUpdate is null || newClass is null)
+            throw new InvalidOperationException("There some problem.");
+
+        lessonToUpdate.classroom = newClass;
+
+        lessonContext.SaveChanges();
     }
 
     public void Delete(int id)
@@ -333,6 +445,11 @@ public class StudentService
     public Student? GetById(int id)
     {
         return studentContext.Students.AsNoTracking().SingleOrDefault(p => p.studentID == id);
+    }
+
+    public IEnumerable<Student>? GetByGroupId(int id)
+    {
+        return studentContext.Students.AsNoTracking().ToList().Where(p => p.groupID == id);
     }
 
     public Student Add(Student student)
@@ -424,6 +541,18 @@ public class StudentService
 
         studentContext.SaveChanges();
     }
+
+    public void genderUpdate(int id, string newGender)
+    {
+        var studentToUpdate = studentContext.Students.Find(id);
+
+        if (studentToUpdate is null || newGender is null)
+            throw new InvalidOperationException("There some problem.");
+
+        studentToUpdate.gender = bool.Parse(newGender);
+
+        studentContext.SaveChanges();
+    }
 }
 
 public class SubjectService
@@ -452,6 +581,18 @@ public class SubjectService
         subjectContext.SaveChanges();
 
         return employee;
+    }
+
+    public void nameUpdate(int id, string newName)
+    {
+        var subjectToUpdate = subjectContext.Subjects.Find(id);
+
+        if (subjectToUpdate is null || newName is null)
+            throw new InvalidOperationException("There some problem.");
+
+        subjectToUpdate.subjectName = newName;
+
+        subjectContext.SaveChanges();
     }
 
     public void Delete(int id)
@@ -484,6 +625,10 @@ public class TeacherService
         return teacherContext.Teachers.AsNoTracking().SingleOrDefault(p => p.teacherID == id);
     }
 
+    public IEnumerable<Teacher>? GetByJobId(int id)
+    {
+        return teacherContext.Teachers.AsNoTracking().ToList().Where(p => p.jobID == id);
+    }
 
     public Teacher Add(Teacher employee)
     {
@@ -491,6 +636,54 @@ public class TeacherService
         teacherContext.SaveChanges();
 
         return employee;
+    }
+
+    public void nameUpdate(int id, string newName)
+    {
+        var teacherToUpdate = teacherContext.Teachers.Find(id);
+
+        if (teacherToUpdate is null || newName is null)
+            throw new InvalidOperationException("There some problem.");
+
+        teacherToUpdate.fullNameTeacher = newName;
+
+        teacherContext.SaveChanges();
+    }
+
+    public void jobUpdate(int id, string newJob)
+    {
+        var teacherToUpdate = teacherContext.Teachers.Find(id);
+
+        if (teacherToUpdate is null || newJob is null)
+            throw new InvalidOperationException("There some problem.");
+
+        teacherToUpdate.jobID = Int32.Parse(newJob);
+
+        teacherContext.SaveChanges();
+    }
+
+    public void phoneUpdate(int id, string newPhone)
+    {
+        var teacherToUpdate = teacherContext.Teachers.Find(id);
+
+        if (teacherToUpdate is null || newPhone is null)
+            throw new InvalidOperationException("There some problem.");
+
+        teacherToUpdate.contactPhoneTeacher = newPhone;
+
+        teacherContext.SaveChanges();
+    }
+
+    public void mailUpdate(int id, string newMail)
+    {
+        var teacherToUpdate = teacherContext.Teachers.Find(id);
+
+        if (teacherToUpdate is null || newMail is null)
+            throw new InvalidOperationException("There some problem.");
+
+        teacherToUpdate.contactMailTeacher = newMail;
+
+        teacherContext.SaveChanges();
     }
 
     public void Delete(int id)

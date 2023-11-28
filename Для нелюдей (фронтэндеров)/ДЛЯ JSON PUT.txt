@@ -1,0 +1,44 @@
+/////////Authorization///////
+parametr 1 = loginUpdate
+parametr 2 = passwordUpdate
+parametr 3 = typeUpdate
+
+/////////Employe/////////////
+Paramter 1 = nameUpdate
+Parametr 2 = jobUpdate
+Parametr 3 = mailUpdate
+Parametr 4 = phoneUpdate
+
+/////////Group///////////////
+Only name update
+
+/////////JobTitle////////////
+parametr 1 = nameUpdate
+parametr 2 = salaryUpdate
+
+/////////Journal/////////////
+Only mark update
+
+/////////Lesson//////////////
+Only classroom update
+
+/////////Payment/////////////
+Мы за честные выплаты, ничего не меняем
+
+/////////Student/////////////
+Paramter 1 = nameUpdate
+Parametr 2 = groupUpdate
+Parametr 3 = ageUpdate
+Parametr 4 = enrollmentDateUpdate
+Parametr 5 = mailUpdate
+Parametr 6 = phoneUpdate
+Parametr 7 = genderUpdate
+
+/////////Subject/////////////
+Only name update
+
+//////////Teacher////////////
+Paramter 1 = nameUpdate
+Parametr 2 = jobUpdate
+Parametr 3 = mailUpdate
+Parametr 4 = phoneUpdate

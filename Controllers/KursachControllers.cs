@@ -3,6 +3,7 @@ using Kursach.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Kursach.Controllers;
 
@@ -130,11 +131,43 @@ public class EmployeeController : ControllerBase
         }
     }
 
+    [HttpGet("{jobId}/jobID")]
+    public IEnumerable<Employee> GetByJobId(int jobId)
+    {
+        return employeeService.GetByJobId(jobId);
+    }
+
     [HttpPost]
     public IActionResult Create(Employee newEmployee)
     {
         var employee = employeeService.Add(newEmployee);
         return CreatedAtAction(nameof(GetById), new { id = employee!.employeeID }, employee);
+    }
+
+    [HttpPut("{id}/{parametr}/{value}")]
+    public IActionResult Update(int id, int parametr, string value)
+    {
+        var updatingEmployee = employeeService.GetById(id);
+        if (updatingEmployee is null)
+            return BadRequest();
+        switch (parametr)
+        {
+            case 1:
+                employeeService.nameUpdate(id, value);
+                break;
+            case 2:
+                employeeService.jobUpdate(id, value);
+                break;
+            case 3:
+                employeeService.mailUpdate(id, value);
+                break;
+            case 4:
+                employeeService.phoneUpdate(id, value);
+                break;
+            default:
+                break;
+        }
+        return NoContent();
     }
 
     [HttpDelete("{id}")]
@@ -191,6 +224,16 @@ public class GroupController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = group!.groupID }, group);
     }
 
+    [HttpPut("{id}/{value}")]
+    public IActionResult Update(int id, string value)
+    {
+        var updatingGroup = groupService.GetById(id);
+        if (updatingGroup is null)
+            return BadRequest();
+        groupService.nameUpdate(id, value);
+        return NoContent();
+    }
+
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
@@ -245,6 +288,26 @@ public class JobTitleController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = jobTitle!.jobID }, jobTitle);
     }
 
+    [HttpPut("{id}/{parametr}/{value}")]
+    public IActionResult Update(int id, int parametr, string value)
+    {
+        var updatingJobTitle = jobTitleService.GetById(id);
+        if (updatingJobTitle is null)
+            return BadRequest();
+        switch (parametr)
+        {
+            case 1:
+                jobTitleService.nameUpdate(id, value);
+                break;
+            case 2:
+                jobTitleService.salaryUpdate(id, value);
+                break;
+            default:
+                break;
+        }
+        return NoContent();
+    }
+
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
@@ -278,18 +341,9 @@ public class JournalController : ControllerBase
         return journalService.GetAll();
     }
     [HttpGet("{id}")]
-    public ActionResult<Journal> GetById(int id)
+    public IEnumerable<Journal> GetById(int id)
     {
-        var journal = journalService.GetById(id);
-
-        if (journal is not null)
-        {
-            return journal;
-        }
-        else
-        {
-            return NotFound();
-        }
+        return journalService.GetById(id);
     }
 
     [HttpPost]
@@ -297,6 +351,16 @@ public class JournalController : ControllerBase
     {
         var journal = journalService.Add(newJournal);
         return CreatedAtAction(nameof(GetById), new { id = journal!.groupID }, journal);
+    }
+
+    [HttpPut("{id}/{value}")]
+    public IActionResult Update(int id, string value)
+    {
+        var updatingJournal = journalService.GetById(id);
+        if (updatingJournal is null)
+            return BadRequest();
+       journalService.markUpdate(id, value);
+        return NoContent();
     }
 
     [HttpDelete("{id}")]
@@ -351,6 +415,16 @@ public class LessonController : ControllerBase
     {
         var lesson = lessonService.Add(newLesson);
         return CreatedAtAction(nameof(GetById), new { id = lesson!.groupID }, lesson);
+    }
+
+    [HttpPut("{id}/{value}")]
+    public IActionResult Update(int id, string value)
+    {
+        var updatingLesson = lessonService.GetById(id);
+        if (updatingLesson is null)
+            return BadRequest();
+        lessonService.classUpdate(id, value);
+        return NoContent();
     }
 
     [HttpDelete("{id}")]
@@ -455,6 +529,12 @@ public class StudentController : ControllerBase
         }
     }
 
+    [HttpGet("{groupId}/groupID")]
+    public IEnumerable<Student> GetByGroupId(int groupId)
+    {
+        return studentService.GetByGroupId(groupId);
+    }
+
     [HttpPost]
     public IActionResult Create(Student newStudent)
     {
@@ -487,6 +567,9 @@ public class StudentController : ControllerBase
                 break;
             case 6:
                 studentService.contactPhoneUpdate(id, value);
+                break;
+            case 7:
+                studentService.genderUpdate(id, value);
                 break;
             default:
                 break;
@@ -548,6 +631,16 @@ public class SubjectController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = subject!.subjectID }, subject);
     }
 
+    [HttpPut("{id}/{value}")]
+    public IActionResult Update(int id, string value)
+    {
+        var updatingSubject = subjectService.GetById(id);
+        if (updatingSubject is null)
+            return BadRequest();
+        subjectService.nameUpdate(id, value);
+        return NoContent();
+    }
+
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
@@ -595,11 +688,43 @@ public class TeacherController : ControllerBase
         }
     }
 
+    [HttpGet("{jobId}/jobID")]
+    public IEnumerable<Teacher> GetByJobId(int jobId)
+    {
+        return teacherService.GetByJobId(jobId);
+    }
+
     [HttpPost]
     public IActionResult Create(Teacher newTeacher)
     {
         var teacher = teacherService.Add(newTeacher);
         return CreatedAtAction(nameof(GetById), new { id = teacher!.teacherID }, teacher);
+    }
+
+    [HttpPut("{id}/{parametr}/{value}")]
+    public IActionResult Update(int id, int parametr, string value)
+    {
+        var updatingTeacher = teacherService.GetById(id);
+        if (updatingTeacher is null)
+            return BadRequest();
+        switch (parametr)
+        {
+            case 1:
+                teacherService.nameUpdate(id, value);
+                break;
+            case 2:
+                teacherService.jobUpdate(id, value);
+                break;
+            case 3:
+                teacherService.mailUpdate(id, value);
+                break;
+            case 4:
+                teacherService.phoneUpdate(id, value);
+                break;
+            default:
+                break;
+        }
+        return NoContent();
     }
 
     [HttpDelete("{id}")]
