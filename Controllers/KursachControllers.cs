@@ -131,6 +131,21 @@ public class EmployeeController : ControllerBase
         }
     }
 
+    [HttpGet("{authToken}/authToken")]
+    public ActionResult<Employee> GetByAuthToken(int authToken)
+    {
+        var employee = employeeService.GetByAuthToken(authToken);
+
+        if (employee is not null)
+        {
+            return employee;
+        }
+        else
+        {
+            return NotFound();
+        }
+    }
+
     [HttpGet("{jobId}/jobID")]
     public IEnumerable<Employee> GetByJobId(int jobId)
     {
@@ -529,6 +544,21 @@ public class StudentController : ControllerBase
         }
     }
 
+    [HttpGet("{authToken}/authToken")]
+    public ActionResult<Student> GetByAuthToken(int authToken)
+    {
+        var student = studentService.GetByAuthToken(authToken);
+
+        if (student is not null)
+        {
+            return student;
+        }
+        else
+        {
+            return NotFound();
+        }
+    }
+
     [HttpGet("{groupId}/groupID")]
     public IEnumerable<Student> GetByGroupId(int groupId)
     {
@@ -677,6 +707,21 @@ public class TeacherController : ControllerBase
     public ActionResult<Teacher> GetById(int id)
     {
         var teacher = teacherService.GetById(id);
+
+        if (teacher is not null)
+        {
+            return teacher;
+        }
+        else
+        {
+            return NotFound();
+        }
+    }
+
+    [HttpGet("{authToken}/authToken")]
+    public ActionResult<Teacher> GetByAuthToken(int authToken)
+    {
+        var teacher = teacherService.GetById(authToken);
 
         if (teacher is not null)
         {

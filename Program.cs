@@ -23,6 +23,16 @@ builder.Services.AddScoped<PaymentService>();
 builder.Services.AddScoped<SubjectService>();
 builder.Services.AddScoped<TeacherService>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
+});
 
 var app = builder.Build();
 
@@ -37,6 +47,8 @@ app.UseAuthorization();
 app.MapRazorPages();
 
 app.MapControllers();
+
+app.UseCors("AllowAllOrigins");
 
 app.CreateDbIfNotExists();
 

@@ -97,6 +97,11 @@ public class EmployeeService
         return empContext.Employees.AsNoTracking().ToList();
     }
 
+    public Employee? GetByAuthToken(int authToken)
+    {
+        return empContext.Employees.AsNoTracking().SingleOrDefault(p => p.authToken == authToken);
+    }
+
     public Employee? GetById(int id)
     {
         return empContext.Employees.AsNoTracking().SingleOrDefault(p => p.employeeID == id);
@@ -447,6 +452,11 @@ public class StudentService
         return studentContext.Students.AsNoTracking().SingleOrDefault(p => p.studentID == id);
     }
 
+    public Student? GetByAuthToken(int authToken)
+    {
+        return studentContext.Students.AsNoTracking().SingleOrDefault(p => p.authToken == authToken);
+    }
+
     public IEnumerable<Student>? GetByGroupId(int id)
     {
         return studentContext.Students.AsNoTracking().ToList().Where(p => p.groupID == id);
@@ -623,6 +633,11 @@ public class TeacherService
     public Teacher? GetById(int id)
     {
         return teacherContext.Teachers.AsNoTracking().SingleOrDefault(p => p.teacherID == id);
+    }
+
+    public Teacher? GetByAuthToken(int authToken)
+    {
+        return teacherContext.Teachers.AsNoTracking().SingleOrDefault(p => p.authToken == authToken);
     }
 
     public IEnumerable<Teacher>? GetByJobId(int id)
