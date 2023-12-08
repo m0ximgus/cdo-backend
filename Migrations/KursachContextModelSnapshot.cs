@@ -115,6 +115,32 @@ namespace Kursach.Migrations
                     b.ToTable("Employees");
                 });
 
+            modelBuilder.Entity("Kursach.Models.Event", b =>
+                {
+                    b.Property<int>("eventID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("eventID"));
+
+                    b.Property<DateTime>("eventDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("eventDescription")
+                        .IsRequired()
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)");
+
+                    b.Property<string>("eventHeader")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.HasKey("eventID");
+
+                    b.ToTable("Events");
+                });
+
             modelBuilder.Entity("Kursach.Models.Group", b =>
                 {
                     b.Property<int>("groupID")
@@ -157,35 +183,56 @@ namespace Kursach.Migrations
                     b.Property<int>("groupID")
                         .HasColumnType("int");
 
+                    b.Property<int>("lessonID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("mark")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("rating")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("studentID")
                         .HasColumnType("int");
 
-                    b.Property<int>("mark")
+                    b.Property<int?>("teacherID")
                         .HasColumnType("int");
 
-                    b.HasKey("groupID", "studentID");
+                    b.HasKey("groupID");
+
+                    b.HasIndex("lessonID");
 
                     b.HasIndex("studentID");
+
+                    b.HasIndex("teacherID");
 
                     b.ToTable("Journal");
                 });
 
             modelBuilder.Entity("Kursach.Models.Lesson", b =>
                 {
-                    b.Property<int?>("groupID")
+                    b.Property<int>("lessonID")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int?>("teacherID")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("subjectID")
-                        .HasColumnType("int");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("lessonID"));
 
                     b.Property<string>("classroom")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("groupID", "teacherID", "subjectID");
+                    b.Property<int?>("groupID")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("subjectID")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("teacherID")
+                        .HasColumnType("int");
+
+                    b.HasKey("lessonID");
+
+                    b.HasIndex("groupID");
 
                     b.HasIndex("subjectID");
 
@@ -196,8 +243,11 @@ namespace Kursach.Migrations
 
             modelBuilder.Entity("Kursach.Models.Payment", b =>
                 {
-                    b.Property<int?>("studentID")
+                    b.Property<int>("paymentID")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("paymentID"));
 
                     b.Property<double>("paymentCost")
                         .HasColumnType("float");
@@ -209,7 +259,12 @@ namespace Kursach.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("studentID");
+                    b.Property<int?>("studentID")
+                        .HasColumnType("int");
+
+                    b.HasKey("paymentID");
+
+                    b.HasIndex("studentID");
 
                     b.ToTable("Payments");
                 });
@@ -379,13 +434,25 @@ namespace Kursach.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Kursach.Models.Lesson", "Lessons")
+                        .WithMany()
+                        .HasForeignKey("lessonID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Kursach.Models.Student", "Students")
                         .WithMany("Journal")
                         .HasForeignKey("studentID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Kursach.Models.Teacher", null)
+                        .WithMany("Journal")
+                        .HasForeignKey("teacherID");
+
                     b.Navigation("Group");
+
+                    b.Navigation("Lessons");
 
                     b.Navigation("Students");
                 });
@@ -394,21 +461,15 @@ namespace Kursach.Migrations
                 {
                     b.HasOne("Kursach.Models.Group", "Group")
                         .WithMany("Lessons")
-                        .HasForeignKey("groupID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("groupID");
 
                     b.HasOne("Kursach.Models.Subject", "Subject")
                         .WithMany("Lessons")
-                        .HasForeignKey("subjectID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("subjectID");
 
                     b.HasOne("Kursach.Models.Teacher", "Teacher")
                         .WithMany("Lessons")
-                        .HasForeignKey("teacherID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("teacherID");
 
                     b.Navigation("Group");
 
@@ -421,9 +482,7 @@ namespace Kursach.Migrations
                 {
                     b.HasOne("Kursach.Models.Student", "Student")
                         .WithMany("Payments")
-                        .HasForeignKey("studentID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("studentID");
 
                     b.Navigation("Student");
                 });
@@ -494,6 +553,8 @@ namespace Kursach.Migrations
 
             modelBuilder.Entity("Kursach.Models.Teacher", b =>
                 {
+                    b.Navigation("Journal");
+
                     b.Navigation("Lessons");
                 });
 #pragma warning restore 612, 618

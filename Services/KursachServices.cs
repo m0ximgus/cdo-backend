@@ -28,6 +28,11 @@ public class AuthorizationService
         return authContext.Authorizations.AsNoTracking().SingleOrDefault(p => (p.login == login && p.password == password));
     }
 
+    public IEnumerable<Authorization> GetByType(string type)
+    {
+        return authContext.Authorizations.AsNoTracking().ToList().Where(p => p.type == type);
+    }
+
     public Authorization Add(Authorization auth)
     {
         authContext.Authorizations.Add(auth);
@@ -179,6 +184,80 @@ public class EmployeeService
     }
 }
 
+public class EventService
+{
+    private readonly KursachContext eventContext;
+
+    public EventService(KursachContext context)
+    {
+        eventContext = context;
+    }
+
+    public IEnumerable<Event> GetAll()
+    {
+        return eventContext.Events.AsNoTracking().ToList();
+    }
+
+    public Event? GetById(int id)
+    {
+        return eventContext.Events.AsNoTracking().SingleOrDefault(p => p.eventID == id);
+    }
+
+    public Event Add(Event event_)
+    {
+        eventContext.Events.Add(event_);
+        eventContext.SaveChanges();
+
+        return event_;
+    }
+
+    public void headerUpdate(int id, string newHeader)
+    {
+        var eventToUpdate = eventContext.Events.Find(id);
+
+        if (eventToUpdate is null || newHeader is null)
+            throw new InvalidOperationException("There some problem.");
+
+        eventToUpdate.eventHeader = newHeader;
+
+        eventContext.SaveChanges();
+    }
+
+    public void discriptionUpdate(int id, string newDiscription)
+    {
+        var eventToUpdate = eventContext.Events.Find(id);
+
+        if (eventToUpdate is null || newDiscription is null)
+            throw new InvalidOperationException("There some problem.");
+
+        eventToUpdate.eventDescription = newDiscription;
+
+        eventContext.SaveChanges();
+    }
+
+    public void dateUpdate(int id, string newDate)
+    {
+        var eventToUpdate = eventContext.Events.Find(id);
+
+        if (eventToUpdate is null || newDate is null)
+            throw new InvalidOperationException("There some problem.");
+
+        eventToUpdate.eventDate = DateTime.Parse(newDate);
+
+        eventContext.SaveChanges();
+    }
+
+    public void Delete(int id)
+    {
+        var eventToDelete = eventContext.Events.Find(id);
+        if (eventToDelete is not null)
+        {
+            eventContext.Events.Remove(eventToDelete);
+            eventContext.SaveChanges();
+        }
+    }
+}
+
 public class GroupService
 {
     private readonly KursachContext groupContext;
@@ -198,13 +277,12 @@ public class GroupService
         return groupContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == id);
     }
 
-
-    public Group Add(Group employee)
+    public Group Add(Group group)
     {
-        groupContext.Groups.Add(employee);
+        groupContext.Groups.Add(group);
         groupContext.SaveChanges();
 
-        return employee;
+        return group;
     }
 
     public void nameUpdate(int id, string newName)
@@ -221,10 +299,10 @@ public class GroupService
 
     public void Delete(int id)
     {
-        var employeeToDelete = groupContext.Groups.Find(id);
-        if (employeeToDelete is not null)
+        var groupToDelete = groupContext.Groups.Find(id);
+        if (groupToDelete is not null)
         {
-            groupContext.Groups.Remove(employeeToDelete);
+            groupContext.Groups.Remove(groupToDelete);
             groupContext.SaveChanges();
         }
     }
@@ -249,21 +327,20 @@ public class JobTitleService
         return jobTitleContext.JobTitles.AsNoTracking().SingleOrDefault(p => p.jobID == id);
     }
 
-
-    public JobTitle Add(JobTitle employee)
+    public JobTitle Add(JobTitle jobTitle)
     {
-        jobTitleContext.JobTitles.Add(employee);
+        jobTitleContext.JobTitles.Add(jobTitle);
         jobTitleContext.SaveChanges();
 
-        return employee;
+        return jobTitle;
     }
 
     public void Delete(int id)
     {
-        var employeeToDelete = jobTitleContext.JobTitles.Find(id);
-        if (employeeToDelete is not null)
+        var jobTitleToDelete = jobTitleContext.JobTitles.Find(id);
+        if (jobTitleToDelete is not null)
         {
-            jobTitleContext.JobTitles.Remove(employeeToDelete);
+            jobTitleContext.JobTitles.Remove(jobTitleToDelete);
             jobTitleContext.SaveChanges();
         }
     }
@@ -312,6 +389,16 @@ public class JournalService
         return journalContext.Journals.AsNoTracking().ToList().Where(p => p.groupID == id);
     }
 
+    public IEnumerable<Journal>? GetByStudentId(int id)
+    {
+        return journalContext.Journals.AsNoTracking().ToList().Where(p => p.studentID == id);
+    }
+
+    public IEnumerable<Journal>? GetByLessonId(int id)
+    {
+        return journalContext.Journals.AsNoTracking().ToList().Where(p => p.lessonID == id);
+    }
+
     public Journal Add(Journal journal)
     {
         journalContext.Journals.Add(journal);
@@ -320,14 +407,50 @@ public class JournalService
         return journal;
     }
 
-    public void markUpdate(int id, string newMark)
+    public void markUpdate(int groupId, int studentId, string newMark)
     {
-        var journalToUpdate = journalContext.Journals.Find(id);
+        var journalToUpdate = journalContext.Journals.Where(p => p.groupID == groupId && p.studentID == studentId).SingleOrDefault();
 
         if (journalToUpdate is null || newMark is null)
             throw new InvalidOperationException("There some problem.");
 
-        journalToUpdate.mark = Int32.Parse(newMark);
+        journalToUpdate.mark = newMark;
+
+        journalContext.SaveChanges();
+    }
+
+    public void firstRatingUpdate(int groupId, int studentId, string newRating)
+    {
+        var journalToUpdate = journalContext.Journals.Where(p => p.groupID == groupId && p.studentID == studentId).SingleOrDefault();
+
+        if (journalToUpdate is null || newRating is null)
+            throw new InvalidOperationException("There some problem.");
+
+        journalToUpdate.rating[0] = Int32.Parse(newRating);
+
+        journalContext.SaveChanges();
+    }
+
+    public void secondRatingUpdate(int groupId, int studentId, string newRating)
+    {
+        var journalToUpdate = journalContext.Journals.Where(p => p.groupID == groupId && p.studentID == studentId).SingleOrDefault();
+
+        if (journalToUpdate is null || newRating is null)
+            throw new InvalidOperationException("There some problem.");
+
+        journalToUpdate.rating[1] = Int32.Parse(newRating);
+
+        journalContext.SaveChanges();
+    }
+
+    public void thirdRatingUpdate(int groupId, int studentId, string newRating)
+    {
+        var journalToUpdate = journalContext.Journals.Where(p => p.groupID == groupId && p.studentID == studentId).SingleOrDefault();
+
+        if (journalToUpdate is null || newRating is null)
+            throw new InvalidOperationException("There some problem.");
+
+        journalToUpdate.rating[2] = Int32.Parse(newRating);
 
         journalContext.SaveChanges();
     }
@@ -359,9 +482,23 @@ public class LessonService
 
     public Lesson? GetById(int id)
     {
-        return lessonContext.Lessons.AsNoTracking().SingleOrDefault(p => p.groupID == id);
+        return lessonContext.Lessons.AsNoTracking().SingleOrDefault(p => p.lessonID == id);
     }
 
+    public IEnumerable<Lesson> GetByTeacherId(int id)
+    {
+        return lessonContext.Lessons.AsNoTracking().ToList().Where(p => p.teacherID == id);
+    }
+
+    public IEnumerable<Lesson> GetByGroupId(int id)
+    {
+        return lessonContext.Lessons.AsNoTracking().ToList().Where(p => p.groupID == id);
+    }
+
+    public IEnumerable<Lesson> GetBySubjectId(int id)
+    {
+        return lessonContext.Lessons.AsNoTracking().ToList().Where(p => p.subjectID == id);
+    }
 
     public Lesson Add(Lesson employee)
     {
@@ -410,9 +547,13 @@ public class PaymentService
 
     public Payment? GetById(int id)
     {
-        return paymentContext.Payments.AsNoTracking().SingleOrDefault(p => p.studentID == id);
+        return paymentContext.Payments.AsNoTracking().SingleOrDefault(p => p.paymentID == id);
     }
 
+    public IEnumerable<Payment>? GetByStudentId(int id)
+    {
+        return paymentContext.Payments.AsNoTracking().ToList().Where(p => p.studentID == id);
+    }
 
     public Payment Add(Payment payment)
     {

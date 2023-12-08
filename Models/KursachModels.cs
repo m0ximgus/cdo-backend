@@ -49,6 +49,19 @@ public class Employee
     public JobTitle? JobTitles { get; set; } = null;
 }
 
+[Table("Events")]
+public class Event
+{
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public int eventID { get; set; }
+    [MaxLength(128)]
+    public string eventHeader { get; set; }
+    [MaxLength(512)]
+    public string eventDescription { get; set; }
+    public DateTime eventDate { get; set; }
+}
+
 [Table("Groups")]
 public class Group
 {
@@ -82,28 +95,35 @@ public class JobTitle
     public Employee? Employee { get; }
 }
 
-[PrimaryKey(nameof(groupID), nameof(studentID))]
+[PrimaryKey(nameof(groupID))]
 [Table("Journal")]
 public class Journal
 {
-    public int mark { get; set; }
+    public string? mark { get; set; }
+    public int[]? rating { get; set; } = new int[3];
 
     //FK
-    public int? groupID { get; set; }
+    public int groupID { get; set; }
     [ForeignKey("groupID")]
     public Group? Group { get; set; } = null!;
 
-    public int? studentID { get; set; }
+    public int studentID { get; set; }
     [ForeignKey("studentID")]
     public Student? Students { get; set; } = null;
+
+    public int lessonID { get; set; }
+    [ForeignKey("lessonID")]
+    public Lesson? Lessons { get; set; } = null;
 }
 
-[PrimaryKey(nameof(groupID), nameof(teacherID), nameof(subjectID))]
 [Table("Lessons")]
 public class Lesson
 {
     [Required]
     public string classroom { get; set; }
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public int lessonID { get; set; }
 
     //FK
     public int? groupID { get; set; }
@@ -118,12 +138,16 @@ public class Lesson
     [ForeignKey("subjectID")]
     public Subject? Subject { get; set; } = null;
 
+    //Nav
+    public Journal? Journal { get; }
 }
 
-[PrimaryKey(nameof(studentID))]
 [Table("Payments")]
 public class Payment
 {
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public int paymentID { get; set; }
     [Required]
     public string paymentType { get; set; }
     [Required]
@@ -206,4 +230,5 @@ public class Teacher
     public List<Lesson> Lessons { get; } = new();
     public List<Group> Groups { get; } = new();
     public List<Subject> Subjects { get; } = new();
+    public List<Journal> Journal { get; } = new();
 }

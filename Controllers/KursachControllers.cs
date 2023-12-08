@@ -38,6 +38,12 @@ public class AuthorizationController : ControllerBase
         }
     }
 
+    [HttpGet("{type}/type")]
+    public IEnumerable<Authorization> GetByType(string type)
+    {
+        return authService.GetByType(type);
+    }
+
     [HttpGet("{login}/{password}")]
     public ActionResult<Authorization> GetByLogin(string login, string password)
     {
@@ -188,11 +194,89 @@ public class EmployeeController : ControllerBase
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
-        var student = employeeService.GetById(id);
+        var employee = employeeService.GetById(id);
 
-        if (student is not null)
+        if (employee is not null)
         {
             employeeService.Delete(id);
+            return Ok();
+        }
+        else
+        {
+            return NotFound();
+        }
+    }
+}
+
+[ApiController]
+[Route("[controller]")]
+public class EventController : ControllerBase
+{
+    EventService eventService;
+    public EventController(EventService service)
+    {
+        eventService = service;
+    }
+
+    [HttpGet]
+    public IEnumerable<Event> GetAll()
+    {
+        return eventService.GetAll();
+    }
+
+    [HttpGet("{id}")]
+    public ActionResult<Event> GetById(int id)
+    {
+        var _event = eventService.GetById(id);
+
+        if (_event is not null)
+        {
+            return _event;
+        }
+        else
+        {
+            return NotFound();
+        }
+    }
+
+    [HttpPost]
+    public IActionResult Create(Event newEvent)
+    {
+        var _event = eventService.Add(newEvent);
+        return CreatedAtAction(nameof(GetById), new { id = _event!.eventID }, _event);
+    }
+
+    [HttpPut("{id}/{parametr}/{value}")]
+    public IActionResult Update(int id, int parametr, string value)
+    {
+        var updatingEvent = eventService.GetById(id);
+        if (updatingEvent is null)
+            return BadRequest();
+        switch (parametr)
+        {
+            case 1:
+                eventService.headerUpdate(id, value);
+                break;
+            case 2:
+                eventService.discriptionUpdate(id, value);
+                break;
+            case 3:
+                eventService.dateUpdate(id, value);
+                break;
+            default:
+                break;
+        }
+        return NoContent();
+    }
+
+    [HttpDelete("{id}")]
+    public IActionResult Delete(int id)
+    {
+        var _event = eventService.GetById(id);
+
+        if (_event is not null)
+        {
+            eventService.Delete(id);
             return Ok();
         }
         else
@@ -355,26 +439,55 @@ public class JournalController : ControllerBase
     {
         return journalService.GetAll();
     }
-    [HttpGet("{id}")]
-    public IEnumerable<Journal> GetById(int id)
+
+    [HttpGet("{groupId}/groupId")]
+    public IEnumerable<Journal> GetByGroupId(int groupId)
     {
-        return journalService.GetById(id);
+        return journalService.GetById(groupId);
+    }
+
+    [HttpGet("{studentId}/studentId")]
+    public IEnumerable<Journal> GetByStudentId(int studentId)
+    {
+        return journalService.GetByStudentId(studentId);
+    }
+
+    [HttpGet("{lessonId}/lessonId")]
+    public IEnumerable<Journal> GetByLessonId(int lessonId)
+    {
+        return journalService.GetByLessonId(lessonId);
     }
 
     [HttpPost]
     public IActionResult Create(Journal newJournal)
     {
         var journal = journalService.Add(newJournal);
-        return CreatedAtAction(nameof(GetById), new { id = journal!.groupID }, journal);
+        return CreatedAtAction(nameof(GetByGroupId), new { id = journal!.groupID }, journal);
     }
 
-    [HttpPut("{id}/{value}")]
-    public IActionResult Update(int id, string value)
+    [HttpPut("{groupId}/{studentId}/{parametr}/{value}")]
+    public IActionResult Update(int groupId,int studentId, int parametr, string value)
     {
-        var updatingJournal = journalService.GetById(id);
+        var updatingJournal = journalService.GetById(groupId);
         if (updatingJournal is null)
             return BadRequest();
-       journalService.markUpdate(id, value);
+        switch (parametr)
+        {
+            case 1:
+                journalService.markUpdate(groupId, studentId, value);
+                break;
+            case 2:
+                journalService.firstRatingUpdate(groupId, studentId, value);
+                break;
+            case 3:
+                journalService.secondRatingUpdate(groupId, studentId, value);
+                break;
+            case 4:
+                journalService.thirdRatingUpdate(groupId, studentId, value);
+                break;
+            default:
+                break;
+        }
         return NoContent();
     }
 
@@ -410,6 +523,7 @@ public class LessonController : ControllerBase
     {
         return lessonService.GetAll();
     }
+
     [HttpGet("{id}")]
     public ActionResult<Lesson> GetById(int id)
     {
@@ -423,6 +537,24 @@ public class LessonController : ControllerBase
         {
             return NotFound();
         }
+    }
+
+    [HttpGet("{teacherId}/teacherId")]
+    public IEnumerable<Lesson> GetByTeacherId(int teacherId)
+    {
+        return lessonService.GetByTeacherId(teacherId);
+    }
+
+    [HttpGet("{groupId}/groupId")]
+    public IEnumerable<Lesson> GetByGroupId(int groupId)
+    {
+        return lessonService.GetByGroupId(groupId);
+    }
+
+    [HttpGet("{subjectId}/subjectId")]
+    public IEnumerable<Lesson> GetBySubjectId(int subjectId)
+    {
+        return lessonService.GetByTeacherId(subjectId);
     }
 
     [HttpPost]
@@ -474,6 +606,7 @@ public class PaymentController : ControllerBase
     {
         return paymentService.GetAll();
     }
+
     [HttpGet("{id}")]
     public ActionResult<Payment> GetById(int id)
     {
@@ -487,6 +620,12 @@ public class PaymentController : ControllerBase
         {
             return NotFound();
         }
+    }
+
+    [HttpGet("{studentId}/studentId")]
+    public IEnumerable<Payment> GetByStudentId(int studentId)
+    {
+        return paymentService.GetByStudentId(studentId);
     }
 
     [HttpPost]

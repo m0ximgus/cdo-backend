@@ -3,11 +3,16 @@ parametr 1 = loginUpdate
 parametr 2 = passwordUpdate
 parametr 3 = typeUpdate
 
-/////////Employe/////////////
+/////////Employee/////////////
 Paramter 1 = nameUpdate
 Parametr 2 = jobUpdate
 Parametr 3 = mailUpdate
 Parametr 4 = phoneUpdate
+
+/////////Event////////////////
+Parametr 1 = headerUpdate
+Parametr 2 = descriptionUpdate
+Parametr 3 = dateUpdate
 
 /////////Group///////////////
 Only name update
@@ -17,7 +22,10 @@ parametr 1 = nameUpdate
 parametr 2 = salaryUpdate
 
 /////////Journal/////////////
-Only mark update
+parametr 1 = markUpdate
+parametr 2 = firstRatingUpdate
+parametr 3 = secondRatingUpdate
+parametr 4 = thirdRatingUpdate
 
 /////////Lesson//////////////
 Only classroom update

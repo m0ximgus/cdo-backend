@@ -15,6 +15,7 @@ builder.Services.AddDbContext<KursachContext>();
 builder.Services.AddScoped<StudentService>();
 builder.Services.AddScoped<AuthorizationService>();
 builder.Services.AddScoped<EmployeeService>();
+builder.Services.AddScoped<EventService>();
 builder.Services.AddScoped<GroupService>();
 builder.Services.AddScoped<JobTitleService>();
 builder.Services.AddScoped<JournalService>();
