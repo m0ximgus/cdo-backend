@@ -6,6 +6,22 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Kursach.Models;
 
+[Table("Addons")]
+public class Addon
+{
+    [MaxLength(128)]
+    public string addonHeader { get; set; }
+    [MaxLength(1024)]
+    public string addonDescription { get; set; }
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public int addonID { get; set; }
+    //FK
+    public int lessonID { get; set; }
+    [ForeignKey("lessonID")]
+    public Lesson? Lesson { get; set; } = null;
+}
+
 [Table("Authorizations")]
 public class Authorization
 {
@@ -21,7 +37,6 @@ public class Authorization
     [Required]
     [MaxLength(11)]
     public string type { get; set; }
-
 
     //Nav
     public Student? Student { get; }
@@ -140,6 +155,7 @@ public class Lesson
 
     //Nav
     public Journal? Journal { get; }
+    public Addon? Addon { get; }
 }
 
 [Table("Payments")]

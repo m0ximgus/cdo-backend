@@ -9,6 +9,89 @@ namespace Kursach.Controllers;
 
 [ApiController]
 [Route("[controller]")]
+public class AddonController : ControllerBase
+{
+    AddonService addonService;
+    public AddonController(AddonService service)
+    {
+        addonService = service;
+    }
+
+    [HttpGet]
+    public IEnumerable<Addon> GetAll()
+    {
+        return addonService.GetAll();
+    }
+
+    [HttpGet("{id}")]
+    public ActionResult<Addon> GetById(int id) 
+    {
+
+        var addon = addonService.GetById(id);
+
+        if (addon is not null)
+        {
+            return addon;
+        }
+        else
+        {
+            return NotFound();
+        }
+    }
+
+    [HttpGet("{lessonID}/lessonId")]
+    public IEnumerable<Addon> GetByLessonId(int lessonID)
+    {
+        return addonService.GetByLessonId(lessonID);
+    }
+
+    [HttpPost]
+    public IActionResult Create(Addon newAddon)
+    {
+        var addon = addonService.Add(newAddon);
+        return CreatedAtAction(nameof(GetById), new { id = addon!.addonID }, addon);
+    }
+
+    [HttpPut("{id}/{parametr}/{value}")]
+    public IActionResult Update(int id, int parametr, string value)
+    {
+        var updatingAddon = addonService.GetById(id);
+        if (updatingAddon is null)
+            return BadRequest();
+        switch (parametr)
+        {
+            case 1:
+                addonService.headerUpdate(id, value);
+                break;
+            case 2:
+                addonService.descriptionUpdate(id, value);
+                break;
+            default:
+                break;
+        }
+        return NoContent();
+    }
+
+    [HttpDelete("{id}")]
+    public IActionResult Delete(int id)
+    {
+        var addon = addonService.GetById(id);
+
+        if (addon is not null)
+        {
+            addonService.Delete(id);
+            return Ok();
+        }
+        else
+        {
+            return NotFound();
+        }
+    }
+}
+
+
+[ApiController]
+[Route("[controller]")]
 public class AuthorizationController : ControllerBase
 {
     AuthorizationService authService;
@@ -458,6 +541,12 @@ public class JournalController : ControllerBase
         return journalService.GetByLessonId(lessonId);
     }
 
+    [HttpGet("/debted")]
+    public IEnumerable<Journal> GetDebted()
+    {
+        return journalService.GetDebted();
+    }
+
     [HttpPost]
     public IActionResult Create(Journal newJournal)
     {
@@ -465,25 +554,25 @@ public class JournalController : ControllerBase
         return CreatedAtAction(nameof(GetByGroupId), new { id = journal!.groupID }, journal);
     }
 
-    [HttpPut("{groupId}/{studentId}/{parametr}/{value}")]
-    public IActionResult Update(int groupId,int studentId, int parametr, string value)
+    [HttpPut("{studentId}/{parametr}/{value}")]
+    public IActionResult Update(int studentId, int parametr, string value)
     {
-        var updatingJournal = journalService.GetById(groupId);
+        var updatingJournal = journalService.GetById(studentId);
         if (updatingJournal is null)
             return BadRequest();
         switch (parametr)
         {
             case 1:
-                journalService.markUpdate(groupId, studentId, value);
+                journalService.markUpdate(studentId, value);
                 break;
             case 2:
-                journalService.firstRatingUpdate(groupId, studentId, value);
+                journalService.firstRatingUpdate(studentId, value);
                 break;
             case 3:
-                journalService.secondRatingUpdate(groupId, studentId, value);
+                journalService.secondRatingUpdate(studentId, value);
                 break;
             case 4:
-                journalService.thirdRatingUpdate(groupId, studentId, value);
+                journalService.thirdRatingUpdate(studentId, value);
                 break;
             default:
                 break;
@@ -860,7 +949,7 @@ public class TeacherController : ControllerBase
     [HttpGet("{authToken}/authToken")]
     public ActionResult<Teacher> GetByAuthToken(int authToken)
     {
-        var teacher = teacherService.GetById(authToken);
+        var teacher = teacherService.GetByAuthToken(authToken);
 
         if (teacher is not null)
         {

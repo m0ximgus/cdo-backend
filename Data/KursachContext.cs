@@ -16,6 +16,7 @@ public class KursachContext : DbContext
         optionsBuilder.UseSqlServer(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=C:\SHARP-PROJECTS\KURSACH4\KURSACH\KURSACH\DB\KURSACH.MDF;Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False");
     }
 
+    public DbSet<Addon> Addons => Set<Addon>();
     public DbSet<Authorization> Authorizations => Set<Authorization>();
     public DbSet<Employee> Employees => Set<Employee>();
     public DbSet<Event> Events => Set<Event>();

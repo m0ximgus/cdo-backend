@@ -52,6 +52,34 @@ namespace Kursach.Migrations
                     b.ToTable("GroupTeacher");
                 });
 
+            modelBuilder.Entity("Kursach.Models.Addon", b =>
+                {
+                    b.Property<int>("addonID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("addonID"));
+
+                    b.Property<string>("addonDescription")
+                        .IsRequired()
+                        .HasMaxLength(1024)
+                        .HasColumnType("nvarchar(1024)");
+
+                    b.Property<string>("addonHeader")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<int>("lessonID")
+                        .HasColumnType("int");
+
+                    b.HasKey("addonID");
+
+                    b.HasIndex("lessonID");
+
+                    b.ToTable("Addons");
+                });
+
             modelBuilder.Entity("Kursach.Models.Authorization", b =>
                 {
                     b.Property<int>("authToken")
@@ -409,6 +437,17 @@ namespace Kursach.Migrations
                         .HasForeignKey("TeachersteacherID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Kursach.Models.Addon", b =>
+                {
+                    b.HasOne("Kursach.Models.Lesson", "Lesson")
+                        .WithMany()
+                        .HasForeignKey("lessonID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Lesson");
                 });
 
             modelBuilder.Entity("Kursach.Models.Employee", b =>

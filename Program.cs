@@ -13,6 +13,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<KursachContext>();
 
 builder.Services.AddScoped<StudentService>();
+builder.Services.AddScoped<AddonService>();
 builder.Services.AddScoped<AuthorizationService>();
 builder.Services.AddScoped<EmployeeService>();
 builder.Services.AddScoped<EventService>();

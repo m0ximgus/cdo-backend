@@ -1,3 +1,7 @@
+/////////Addon////////////////
+parametr 1 = headerUpdate
+parametr 2 = descriptionUpdate
+
 /////////Authorization///////
 parametr 1 = loginUpdate
 parametr 2 = passwordUpdate

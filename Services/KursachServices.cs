@@ -4,6 +4,74 @@ using Microsoft.EntityFrameworkCore;
 using System;
 
 namespace Kursach.Services;
+
+public class AddonService
+{
+    private readonly KursachContext addonContext;
+
+    public AddonService(KursachContext context)
+    {
+        addonContext = context;
+    }
+
+    public IEnumerable<Addon> GetAll()
+    {
+        return addonContext.Addons.AsNoTracking().ToList();
+    }
+
+    public Addon? GetById(int id)
+    {
+        return addonContext.Addons.AsNoTracking().SingleOrDefault(p => p.addonID == id);
+    }
+
+    public IEnumerable<Addon>? GetByLessonId(int lessonId)
+    {
+        return addonContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lessonId);
+    }
+
+    public Addon Add(Addon addon)
+    {
+        addonContext.Addons.Add(addon);
+        addonContext.SaveChanges();
+
+        return addon;
+    }
+
+    public void Delete(int id)
+    {
+        var addonToDelete = addonContext.Addons.Find(id);
+        if (addonToDelete is not null)
+        {
+            addonContext.Addons.Remove(addonToDelete);
+            addonContext.SaveChanges();
+        }
+    }
+
+    public void headerUpdate(int id, string newHeader)
+    {
+        var addonToUpdate = addonContext.Addons.Find(id);
+
+        if (addonToUpdate is null || newHeader is null)
+            throw new InvalidOperationException("There some problem.");
+
+        addonToUpdate.addonHeader = newHeader;
+
+        addonContext.SaveChanges();
+    }
+
+    public void descriptionUpdate(int id, string newDescription)
+    {
+        var addonToUpdate = addonContext.Addons.Find(id);
+
+        if (addonToUpdate is null || newDescription is null)
+            throw new InvalidOperationException("There some problem.");
+
+        addonToUpdate.addonDescription = newDescription;
+
+        addonContext.SaveChanges();
+    }
+}
+
 public class AuthorizationService
 {
     private readonly KursachContext authContext;
@@ -399,6 +467,11 @@ public class JournalService
         return journalContext.Journals.AsNoTracking().ToList().Where(p => p.lessonID == id);
     }
 
+    public IEnumerable<Journal>? GetDebted()
+    {
+        return journalContext.Journals.AsNoTracking().ToList().Where(p => p.mark is null);
+    }
+
     public Journal Add(Journal journal)
     {
         journalContext.Journals.Add(journal);
@@ -407,9 +480,9 @@ public class JournalService
         return journal;
     }
 
-    public void markUpdate(int groupId, int studentId, string newMark)
+    public void markUpdate(int studentId, string newMark)
     {
-        var journalToUpdate = journalContext.Journals.Where(p => p.groupID == groupId && p.studentID == studentId).SingleOrDefault();
+        var journalToUpdate = journalContext.Journals.Where(p => p.studentID == studentId).SingleOrDefault();
 
         if (journalToUpdate is null || newMark is null)
             throw new InvalidOperationException("There some problem.");
@@ -419,9 +492,9 @@ public class JournalService
         journalContext.SaveChanges();
     }
 
-    public void firstRatingUpdate(int groupId, int studentId, string newRating)
+    public void firstRatingUpdate(int studentId, string newRating)
     {
-        var journalToUpdate = journalContext.Journals.Where(p => p.groupID == groupId && p.studentID == studentId).SingleOrDefault();
+        var journalToUpdate = journalContext.Journals.Where(p => p.studentID == studentId).SingleOrDefault();
 
         if (journalToUpdate is null || newRating is null)
             throw new InvalidOperationException("There some problem.");
@@ -431,9 +504,9 @@ public class JournalService
         journalContext.SaveChanges();
     }
 
-    public void secondRatingUpdate(int groupId, int studentId, string newRating)
+    public void secondRatingUpdate(int studentId, string newRating)
     {
-        var journalToUpdate = journalContext.Journals.Where(p => p.groupID == groupId && p.studentID == studentId).SingleOrDefault();
+        var journalToUpdate = journalContext.Journals.Where(p => p.studentID == studentId).SingleOrDefault();
 
         if (journalToUpdate is null || newRating is null)
             throw new InvalidOperationException("There some problem.");
@@ -443,9 +516,9 @@ public class JournalService
         journalContext.SaveChanges();
     }
 
-    public void thirdRatingUpdate(int groupId, int studentId, string newRating)
+    public void thirdRatingUpdate(int studentId, string newRating)
     {
-        var journalToUpdate = journalContext.Journals.Where(p => p.groupID == groupId && p.studentID == studentId).SingleOrDefault();
+        var journalToUpdate = journalContext.Journals.Where(p => p.studentID == studentId).SingleOrDefault();
 
         if (journalToUpdate is null || newRating is null)
             throw new InvalidOperationException("There some problem.");
