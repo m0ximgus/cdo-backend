@@ -628,6 +628,11 @@ public class PaymentService
         return paymentContext.Payments.AsNoTracking().ToList().Where(p => p.studentID == id);
     }
 
+    public IEnumerable<Payment>? GetByDirection(bool direction)
+    {
+        return paymentContext.Payments.AsNoTracking().ToList().Where(p => p.paymentDirection == direction);
+    }
+
     public Payment Add(Payment payment)
     {
         paymentContext.Payments.Add(payment);
@@ -682,6 +687,11 @@ public class StudentService
         studentContext.SaveChanges();
 
         return student;
+    }
+
+    public IEnumerable<Student>? GetByBudget(bool budget)
+    {
+        return studentContext.Students.AsNoTracking().ToList().Where(p => p.budget == budget);
     }
 
     public void Delete(int id)

@@ -170,6 +170,7 @@ public class Payment
     public double paymentCost { get; set; }
     [Required]
     public DateTime paymentDate { get; set; }
+    public bool paymentDirection { get; set; }
 
     //FK
     public int? studentID { get; set; }
@@ -193,6 +194,7 @@ public class Student
     public string contactPhoneStudent { get; set; }
     public bool gender { get; set; }
 
+    public bool budget { get; set; }
     //FK
     public int? groupID { get; set; }
     [ForeignKey("groupID")]

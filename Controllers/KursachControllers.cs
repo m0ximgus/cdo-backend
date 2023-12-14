@@ -717,6 +717,12 @@ public class PaymentController : ControllerBase
         return paymentService.GetByStudentId(studentId);
     }
 
+    [HttpGet("{paymentDirection}/paymentDirection")]
+    public IEnumerable<Payment> GetByDirection(bool paymentDirection)
+    {
+        return paymentService.GetByDirection(paymentDirection);
+    }
+
     [HttpPost]
     public IActionResult Create(Payment newPayment)
     {
@@ -791,6 +797,12 @@ public class StudentController : ControllerBase
     public IEnumerable<Student> GetByGroupId(int groupId)
     {
         return studentService.GetByGroupId(groupId);
+    }
+
+    [HttpGet("{budget}/budget")]
+    public IEnumerable<Student> GetByBudget(bool budget)
+    {
+        return studentService.GetByBudget(budget);
     }
 
     [HttpPost]

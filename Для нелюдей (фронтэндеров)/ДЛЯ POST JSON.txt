@@ -46,14 +46,15 @@
 
 ///////////////////////////Student////////////////////////////////// +
 {
-  "fullNameStudent": "Иванов Иван Иванович",
-  "age": "2001-08-05",
+  "fullNameStudent": "Петров Пётр Петрович",
+  "age": "2001-06-02",
   "enrollmentDate": "2020-08-25",
-  "contactMailStudent": "ivanov@pochta.ez",
+  "contactMailStudent": "petrov@pochta.ez",
   "contactPhoneStudent": "8-800-XXX-XX-XX",
   "gender": true,
   "groupID": 1,
-  "authToken": 1
+  "authToken": 1,
+  "budget": false
 }
 
 //////////////////////////Teacher/////////////////////////////////// +
@@ -82,8 +83,9 @@
 
 //////////////////////////Payment/////////////////////////////////// +
 {
-  "paymentType": "Выплата стипендии",
-  "paymentCost": 5000,
+  "paymentType": "Оплата общежития",
+  "paymentCost": 4000,
   "paymentDate": "2023-11-27T11:57:58.274Z",
-  "studentID": 1
+  "studentID": 1,
+  "paymentDirection": false
 }

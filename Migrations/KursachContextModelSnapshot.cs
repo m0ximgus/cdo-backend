@@ -283,6 +283,9 @@ namespace Kursach.Migrations
                     b.Property<DateTime>("paymentDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("paymentDirection")
+                        .HasColumnType("bit");
+
                     b.Property<string>("paymentType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -310,6 +313,9 @@ namespace Kursach.Migrations
 
                     b.Property<int?>("authToken")
                         .HasColumnType("int");
+
+                    b.Property<bool>("budget")
+                        .HasColumnType("bit");
 
                     b.Property<string>("contactMailStudent")
                         .IsRequired()
