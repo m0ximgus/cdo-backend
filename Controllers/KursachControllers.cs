@@ -523,10 +523,16 @@ public class JournalController : ControllerBase
         return journalService.GetAll();
     }
 
+    [HttpGet("{studentId}/{groupId}/{lessonId}")]
+    public ActionResult<Journal> GetByAll(int studentId, int groupId, int lessonId)
+    {
+        return journalService.GetByAll(studentId, groupId, lessonId);
+    }
+
     [HttpGet("{groupId}/groupId")]
     public IEnumerable<Journal> GetByGroupId(int groupId)
     {
-        return journalService.GetById(groupId);
+        return journalService.GetByGroupId(groupId);
     }
 
     [HttpGet("{studentId}/studentId")]
@@ -551,13 +557,13 @@ public class JournalController : ControllerBase
     public IActionResult Create(Journal newJournal)
     {
         var journal = journalService.Add(newJournal);
-        return CreatedAtAction(nameof(GetByGroupId), journal);
+        return CreatedAtAction(nameof(GetByGroupId), new { lessonId = journal!.lessonID, groupId = journal!.groupID, studentId = journal!.studentID }, journal);
     }
 
     [HttpPut("{studentId}/{lessonId}/{parametr}/{value}")]
     public IActionResult Update(int studentId, int lessonId, int parametr, string value)
     {
-        var updatingJournal = journalService.GetById(studentId);
+        var updatingJournal = journalService.GetByStudentId(studentId);
         if (updatingJournal is null)
             return BadRequest();
         switch (parametr)
@@ -580,14 +586,14 @@ public class JournalController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("{studentId}")]
-    public IActionResult Delete(int studentId)
+    [HttpDelete("{studentId}/{groupId}/{lessonId}")]
+    public IActionResult Delete(int studentId, int groupId, int lessonId)
     {
-        var journal = journalService.GetById(studentId);
+        var journal = journalService.GetByAll(studentId, groupId, lessonId);
 
         if (journal is not null)
         {
-            journalService.Delete(studentId);
+            journalService.Delete(studentId, groupId, lessonId);
             return Ok();
         }
         else

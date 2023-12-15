@@ -452,7 +452,12 @@ public class JournalService
         return journalContext.Journals.AsNoTracking().ToList();
     }
 
-    public IEnumerable<Journal>? GetById(int id)
+    public Journal? GetByAll(int studentId, int groupId, int lessonId)
+    {
+        return journalContext.Journals.SingleOrDefault(p => p.studentID == studentId && p.groupID == groupId && p.lessonID == lessonId);
+    }
+
+    public IEnumerable<Journal>? GetByGroupId(int id)
     {
         return journalContext.Journals.AsNoTracking().ToList().Where(p => p.groupID == id);
     }
@@ -528,9 +533,9 @@ public class JournalService
         journalContext.SaveChanges();
     }
 
-    public void Delete(int id)
+    public void Delete(int studentId, int groupId, int lessonId)
     {
-        var journalToDelete = journalContext.Journals.Find(id);
+        var journalToDelete = journalContext.Journals.SingleOrDefault(p => p.studentID == studentId && p.groupID == groupId && p.lessonID == lessonId);
         if (journalToDelete is not null)
         {
             journalContext.Journals.Remove(journalToDelete);

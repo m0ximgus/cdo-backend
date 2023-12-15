@@ -226,7 +226,7 @@ namespace Kursach.Migrations
                     b.Property<int?>("teacherID")
                         .HasColumnType("int");
 
-                    b.HasKey("studentID");
+                    b.HasKey("studentID", "groupID", "lessonID");
 
                     b.HasIndex("groupID");
 
