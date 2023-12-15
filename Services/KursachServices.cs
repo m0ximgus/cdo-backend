@@ -480,9 +480,9 @@ public class JournalService
         return journal;
     }
 
-    public void markUpdate(int studentId, string newMark)
+    public void markUpdate(int studentId, int lessonId, string newMark)
     {
-        var journalToUpdate = journalContext.Journals.Where(p => p.studentID == studentId).SingleOrDefault();
+        var journalToUpdate = journalContext.Journals.Where(p => p.studentID == studentId && p.lessonID == lessonId).SingleOrDefault();
 
         if (journalToUpdate is null || newMark is null)
             throw new InvalidOperationException("There some problem.");
@@ -492,9 +492,9 @@ public class JournalService
         journalContext.SaveChanges();
     }
 
-    public void firstRatingUpdate(int studentId, string newRating)
+    public void firstRatingUpdate(int studentId, int lessonId, string newRating)
     {
-        var journalToUpdate = journalContext.Journals.Where(p => p.studentID == studentId).SingleOrDefault();
+        var journalToUpdate = journalContext.Journals.Where(p => p.studentID == studentId && p.lessonID == lessonId).SingleOrDefault();
 
         if (journalToUpdate is null || newRating is null)
             throw new InvalidOperationException("There some problem.");
@@ -504,9 +504,9 @@ public class JournalService
         journalContext.SaveChanges();
     }
 
-    public void secondRatingUpdate(int studentId, string newRating)
+    public void secondRatingUpdate(int studentId, int lessonId, string newRating)
     {
-        var journalToUpdate = journalContext.Journals.Where(p => p.studentID == studentId).SingleOrDefault();
+        var journalToUpdate = journalContext.Journals.Where(p => p.studentID == studentId && p.lessonID == lessonId).SingleOrDefault();
 
         if (journalToUpdate is null || newRating is null)
             throw new InvalidOperationException("There some problem.");
@@ -516,9 +516,9 @@ public class JournalService
         journalContext.SaveChanges();
     }
 
-    public void thirdRatingUpdate(int studentId, string newRating)
+    public void thirdRatingUpdate(int studentId, int lessonId, string newRating)
     {
-        var journalToUpdate = journalContext.Journals.Where(p => p.studentID == studentId).SingleOrDefault();
+        var journalToUpdate = journalContext.Journals.Where(p => p.studentID == studentId && p.lessonID == lessonId).SingleOrDefault();
 
         if (journalToUpdate is null || newRating is null)
             throw new InvalidOperationException("There some problem.");
@@ -628,9 +628,9 @@ public class PaymentService
         return paymentContext.Payments.AsNoTracking().ToList().Where(p => p.studentID == id);
     }
 
-    public IEnumerable<Payment>? GetByDirection(bool direction)
+    public IEnumerable<Payment>? GetByDirection(bool direction, int studentId)
     {
-        return paymentContext.Payments.AsNoTracking().ToList().Where(p => p.paymentDirection == direction);
+        return paymentContext.Payments.AsNoTracking().ToList().Where(p => p.paymentDirection == direction && p.studentID == studentId);
     }
 
     public Payment Add(Payment payment)

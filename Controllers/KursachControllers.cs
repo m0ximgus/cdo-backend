@@ -551,11 +551,11 @@ public class JournalController : ControllerBase
     public IActionResult Create(Journal newJournal)
     {
         var journal = journalService.Add(newJournal);
-        return CreatedAtAction(nameof(GetByGroupId), new { id = journal!.groupID }, journal);
+        return CreatedAtAction(nameof(GetByGroupId), journal);
     }
 
-    [HttpPut("{studentId}/{parametr}/{value}")]
-    public IActionResult Update(int studentId, int parametr, string value)
+    [HttpPut("{studentId}/{lessonId}/{parametr}/{value}")]
+    public IActionResult Update(int studentId, int lessonId, int parametr, string value)
     {
         var updatingJournal = journalService.GetById(studentId);
         if (updatingJournal is null)
@@ -563,16 +563,16 @@ public class JournalController : ControllerBase
         switch (parametr)
         {
             case 1:
-                journalService.markUpdate(studentId, value);
+                journalService.markUpdate(studentId, lessonId, value);
                 break;
             case 2:
-                journalService.firstRatingUpdate(studentId, value);
+                journalService.firstRatingUpdate(studentId, lessonId, value);
                 break;
             case 3:
-                journalService.secondRatingUpdate(studentId, value);
+                journalService.secondRatingUpdate(studentId, lessonId, value);
                 break;
             case 4:
-                journalService.thirdRatingUpdate(studentId, value);
+                journalService.thirdRatingUpdate(studentId, lessonId, value);
                 break;
             default:
                 break;
@@ -580,14 +580,14 @@ public class JournalController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("{id}")]
-    public IActionResult Delete(int id)
+    [HttpDelete("{studentId}")]
+    public IActionResult Delete(int studentId)
     {
-        var journal = journalService.GetById(id);
+        var journal = journalService.GetById(studentId);
 
         if (journal is not null)
         {
-            journalService.Delete(id);
+            journalService.Delete(studentId);
             return Ok();
         }
         else
@@ -717,10 +717,10 @@ public class PaymentController : ControllerBase
         return paymentService.GetByStudentId(studentId);
     }
 
-    [HttpGet("{paymentDirection}/paymentDirection")]
-    public IEnumerable<Payment> GetByDirection(bool paymentDirection)
+    [HttpGet("{paymentDirection}/{studentId}/paymentDirection")]
+    public IEnumerable<Payment> GetByDirection(bool paymentDirection, int studentId)
     {
-        return paymentService.GetByDirection(paymentDirection);
+        return paymentService.GetByDirection(paymentDirection, studentId);
     }
 
     [HttpPost]

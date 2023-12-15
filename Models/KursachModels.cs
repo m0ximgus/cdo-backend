@@ -110,7 +110,7 @@ public class JobTitle
     public Employee? Employee { get; }
 }
 
-[PrimaryKey(nameof(groupID))]
+[PrimaryKey(nameof(studentID))]
 [Table("Journal")]
 public class Journal
 {

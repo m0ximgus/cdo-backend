@@ -208,6 +208,9 @@ namespace Kursach.Migrations
 
             modelBuilder.Entity("Kursach.Models.Journal", b =>
                 {
+                    b.Property<int>("studentID")
+                        .HasColumnType("int");
+
                     b.Property<int>("groupID")
                         .HasColumnType("int");
 
@@ -220,17 +223,14 @@ namespace Kursach.Migrations
                     b.Property<string>("rating")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("studentID")
-                        .HasColumnType("int");
-
                     b.Property<int?>("teacherID")
                         .HasColumnType("int");
 
-                    b.HasKey("groupID");
+                    b.HasKey("studentID");
+
+                    b.HasIndex("groupID");
 
                     b.HasIndex("lessonID");
-
-                    b.HasIndex("studentID");
 
                     b.HasIndex("teacherID");
 
