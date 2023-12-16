@@ -24,7 +24,7 @@ public class AddonController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public ActionResult<Addon> GetById(int id) 
+    public ActionResult<Addon> GetById(int id)
     {
 
         var addon = addonService.GetById(id);
@@ -659,13 +659,28 @@ public class LessonController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = lesson!.groupID }, lesson);
     }
 
-    [HttpPut("{id}/{value}")]
-    public IActionResult Update(int id, string value)
+    [HttpPut("{id}/{parametr}/{value}")]
+    public IActionResult Update(int id, int parametr, string value)
     {
         var updatingLesson = lessonService.GetById(id);
         if (updatingLesson is null)
             return BadRequest();
-        lessonService.classUpdate(id, value);
+        switch (parametr)
+        {
+            case 1:
+                lessonService.classUpdate(id, value);
+                break;
+            case 2:
+                lessonService.weekdayUpdate(id, value);
+                break;
+            case 3:
+                lessonService.dayOrderUpdate(id, value);
+                break;
+            default:
+                break;
+        }
+        return NoContent();
+
         return NoContent();
     }
 

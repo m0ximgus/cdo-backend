@@ -139,6 +139,8 @@ public class Lesson
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int lessonID { get; set; }
+    public int? weekdays { get; set; }
+    public int? dayOrder { get; set; }
 
     //FK
     public int? groupID { get; set; }

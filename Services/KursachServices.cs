@@ -110,7 +110,7 @@ public class AuthorizationService
                 var journals = authContext.Journals.AsNoTracking().ToList().Where(p => p.studentID == auth.Student.studentID);
                 foreach (var journal in journals)
                 {
-                    var lesson = authContext.Lessons.AsNoTracking().SingleOrDefault(p => p.lessonID == journal.lessonID);
+                    var lesson = authContext.Lessons.OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder).AsNoTracking().SingleOrDefault(p => p.lessonID == journal.lessonID);
                     lesson.Addons = authContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
                     lesson.Subject = authContext.Subjects.AsNoTracking().SingleOrDefault(p => p.subjectID == lesson.subjectID);
                     lesson.Teacher = authContext.Teachers.AsNoTracking().SingleOrDefault(p => p.teacherID == lesson.teacherID);
@@ -123,7 +123,7 @@ public class AuthorizationService
             {
                 auth.Teacher = authContext.Teachers.AsNoTracking().SingleOrDefault(p => p.authToken == auth.authToken);
                 auth.Teacher.JobTitles = authContext.JobTitles.AsNoTracking().SingleOrDefault(p => p.jobID == auth.Teacher.jobID);
-                var lessons = authContext.Lessons.AsNoTracking().ToList().Where(p => p.teacherID == auth.Teacher.teacherID);
+                var lessons = authContext.Lessons.AsNoTracking().ToList().Where(p => p.teacherID == auth.Teacher.teacherID).OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder) ;
                 foreach (var lesson in lessons)
                 {
                     lesson.Addons = authContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
@@ -158,7 +158,7 @@ public class AuthorizationService
             var journals = authContext.Journals.AsNoTracking().ToList().Where(p => p.studentID == auth.Student.studentID);
             foreach (var journal in journals)
             {
-                var lesson = authContext.Lessons.AsNoTracking().SingleOrDefault(p => p.lessonID == journal.lessonID);
+                var lesson = authContext.Lessons.OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder).AsNoTracking().SingleOrDefault(p => p.lessonID == journal.lessonID);
                 lesson.Addons = authContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
                 lesson.Subject = authContext.Subjects.AsNoTracking().SingleOrDefault(p => p.subjectID == lesson.subjectID);
                 lesson.Teacher = authContext.Teachers.AsNoTracking().SingleOrDefault(p => p.teacherID == lesson.teacherID);
@@ -171,7 +171,7 @@ public class AuthorizationService
         {
             auth.Teacher = authContext.Teachers.AsNoTracking().SingleOrDefault(p => p.authToken == auth.authToken);
             auth.Teacher.JobTitles = authContext.JobTitles.AsNoTracking().SingleOrDefault(p => p.jobID == auth.Teacher.jobID);
-            var lessons = authContext.Lessons.AsNoTracking().ToList().Where(p => p.teacherID == auth.Teacher.teacherID);
+            var lessons = authContext.Lessons.AsNoTracking().ToList().Where(p => p.teacherID == auth.Teacher.teacherID).OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder);
             foreach (var lesson in lessons)
             {
                 lesson.Addons = authContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
@@ -204,7 +204,7 @@ public class AuthorizationService
             var journals = authContext.Journals.AsNoTracking().ToList().Where(p => p.studentID == auth.Student.studentID);
             foreach (var journal in journals)
             {
-                var lesson = authContext.Lessons.AsNoTracking().SingleOrDefault(p => p.lessonID == journal.lessonID);
+                var lesson = authContext.Lessons.OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder).AsNoTracking().SingleOrDefault(p => p.lessonID == journal.lessonID);
                 lesson.Addons = authContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
                 lesson.Subject = authContext.Subjects.AsNoTracking().SingleOrDefault(p => p.subjectID == lesson.subjectID);
                 lesson.Teacher = authContext.Teachers.AsNoTracking().SingleOrDefault(p => p.teacherID == lesson.teacherID);
@@ -217,7 +217,7 @@ public class AuthorizationService
         {
             auth.Teacher = authContext.Teachers.AsNoTracking().SingleOrDefault(p => p.authToken == auth.authToken);
             auth.Teacher.JobTitles = authContext.JobTitles.AsNoTracking().SingleOrDefault(p => p.jobID == auth.Teacher.jobID);
-            var lessons = authContext.Lessons.AsNoTracking().ToList().Where(p => p.teacherID == auth.Teacher.teacherID);
+            var lessons = authContext.Lessons.AsNoTracking().ToList().Where(p => p.teacherID == auth.Teacher.teacherID).OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder);
             foreach (var lesson in lessons)
             {
                 lesson.Addons = authContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
@@ -252,7 +252,7 @@ public class AuthorizationService
                 var journals = authContext.Journals.AsNoTracking().ToList().Where(p => p.studentID == auth.Student.studentID);
                 foreach (var journal in journals)
                 {
-                    var lesson = authContext.Lessons.AsNoTracking().SingleOrDefault(p => p.lessonID == journal.lessonID);
+                    var lesson = authContext.Lessons.OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder).AsNoTracking().SingleOrDefault(p => p.lessonID == journal.lessonID);
                     lesson.Addons = authContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
                     lesson.Subject = authContext.Subjects.AsNoTracking().SingleOrDefault(p => p.subjectID == lesson.subjectID);
                     lesson.Teacher = authContext.Teachers.AsNoTracking().SingleOrDefault(p => p.teacherID == lesson.teacherID);
@@ -265,7 +265,7 @@ public class AuthorizationService
             {
                 auth.Teacher = authContext.Teachers.AsNoTracking().SingleOrDefault(p => p.authToken == auth.authToken);
                 auth.Teacher.JobTitles = authContext.JobTitles.AsNoTracking().SingleOrDefault(p => p.jobID == auth.Teacher.jobID);
-                var lessons = authContext.Lessons.AsNoTracking().ToList().Where(p => p.teacherID == auth.Teacher.teacherID);
+                var lessons = authContext.Lessons.AsNoTracking().ToList().Where(p => p.teacherID == auth.Teacher.teacherID).OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder);
                 foreach (var lesson in lessons)
                 {
                     lesson.Addons = authContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
@@ -356,7 +356,7 @@ public class EmployeeService
     public IEnumerable<Employee> GetAll()
     {
         var emps = empContext.Employees.AsNoTracking().ToList().OrderBy(p => p.fullNameEmployee);
-        foreach (var emp  in emps)
+        foreach (var emp in emps)
             emp.JobTitles = empContext.JobTitles.AsNoTracking().SingleOrDefault(p => p.jobID == emp.jobID);
         return emps;
     }
@@ -542,7 +542,7 @@ public class GroupService
         foreach (var group in groups)
         {
             group.Students = groupContext.Students.AsNoTracking().ToList().Where(p => p.groupID == group.groupID).OrderBy(p => p.fullNameStudent);
-            var lessons = groupContext.Lessons.AsNoTracking().ToList().Where(p => p.groupID == group.groupID);
+            var lessons = groupContext.Lessons.AsNoTracking().ToList().Where(p => p.groupID == group.groupID).OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder);
             foreach (var lesson in lessons)
             {
                 lesson.Addons = groupContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
@@ -559,7 +559,7 @@ public class GroupService
     {
         var group = groupContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == id);
         group.Students = groupContext.Students.AsNoTracking().ToList().Where(p => p.groupID == group.groupID).OrderBy(p => p.fullNameStudent);
-        var lessons = groupContext.Lessons.AsNoTracking().ToList().Where(p => p.groupID == group.groupID);
+        var lessons = groupContext.Lessons.AsNoTracking().ToList().Where(p => p.groupID == group.groupID).OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder);
         foreach (var lesson in lessons)
         {
             lesson.Addons = groupContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
@@ -679,7 +679,7 @@ public class JournalService
         foreach (var journal in journals)
         {
             journal.Group = journalContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == journal.groupID);
-            var lesson = journalContext.Lessons.AsNoTracking().SingleOrDefault(p => p.lessonID == journal.lessonID);
+            var lesson = journalContext.Lessons.OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder).AsNoTracking().SingleOrDefault(p => p.lessonID == journal.lessonID);
             lesson.Addons = journalContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
             lesson.Group = journalContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == lesson.groupID);
             lesson.Subject = journalContext.Subjects.AsNoTracking().SingleOrDefault(p => p.subjectID == lesson.subjectID);
@@ -695,7 +695,7 @@ public class JournalService
     {
         var journal = journalContext.Journals.SingleOrDefault(p => p.studentID == studentId && p.groupID == groupId && p.lessonID == lessonId);
         journal.Group = journalContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == journal.groupID);
-        var lesson = journalContext.Lessons.AsNoTracking().SingleOrDefault(p => p.lessonID == journal.lessonID);
+        var lesson = journalContext.Lessons.OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder).AsNoTracking().SingleOrDefault(p => p.lessonID == journal.lessonID);
         lesson.Addons = journalContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
         lesson.Group = journalContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == lesson.groupID);
         lesson.Subject = journalContext.Subjects.AsNoTracking().SingleOrDefault(p => p.subjectID == lesson.subjectID);
@@ -712,7 +712,7 @@ public class JournalService
         foreach (var journal in journals)
         {
             journal.Group = journalContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == journal.groupID);
-            var lesson = journalContext.Lessons.AsNoTracking().SingleOrDefault(p => p.lessonID == journal.lessonID);
+            var lesson = journalContext.Lessons.OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder).AsNoTracking().SingleOrDefault(p => p.lessonID == journal.lessonID);
             lesson.Addons = journalContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
             lesson.Group = journalContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == lesson.groupID);
             lesson.Subject = journalContext.Subjects.AsNoTracking().SingleOrDefault(p => p.subjectID == lesson.subjectID);
@@ -730,7 +730,7 @@ public class JournalService
         foreach (var journal in journals)
         {
             journal.Group = journalContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == journal.groupID);
-            var lesson = journalContext.Lessons.AsNoTracking().SingleOrDefault(p => p.lessonID == journal.lessonID);
+            var lesson = journalContext.Lessons.OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder).AsNoTracking().SingleOrDefault(p => p.lessonID == journal.lessonID);
             lesson.Addons = journalContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
             lesson.Group = journalContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == lesson.groupID);
             lesson.Subject = journalContext.Subjects.AsNoTracking().SingleOrDefault(p => p.subjectID == lesson.subjectID);
@@ -748,7 +748,7 @@ public class JournalService
         foreach (var journal in journals)
         {
             journal.Group = journalContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == journal.groupID);
-            var lesson = journalContext.Lessons.AsNoTracking().SingleOrDefault(p => p.lessonID == journal.lessonID);
+            var lesson = journalContext.Lessons.OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder).AsNoTracking().SingleOrDefault(p => p.lessonID == journal.lessonID);
             lesson.Addons = journalContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
             lesson.Group = journalContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == lesson.groupID);
             lesson.Subject = journalContext.Subjects.AsNoTracking().SingleOrDefault(p => p.subjectID == lesson.subjectID);
@@ -766,7 +766,7 @@ public class JournalService
         foreach (var journal in journals)
         {
             journal.Group = journalContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == journal.groupID);
-            var lesson = journalContext.Lessons.AsNoTracking().SingleOrDefault(p => p.lessonID == journal.lessonID);
+            var lesson = journalContext.Lessons.OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder).AsNoTracking().SingleOrDefault(p => p.lessonID == journal.lessonID);
             lesson.Addons = journalContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
             lesson.Group = journalContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == lesson.groupID);
             lesson.Subject = journalContext.Subjects.AsNoTracking().SingleOrDefault(p => p.subjectID == lesson.subjectID);
@@ -856,7 +856,7 @@ public class LessonService
 
     public IEnumerable<Lesson> GetAll()
     {
-        var lessons = lessonContext.Lessons.AsNoTracking().ToList().OrderBy(p => p.subjectID);
+        var lessons = lessonContext.Lessons.AsNoTracking().ToList().OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder);
         foreach (var lesson in lessons)
         {
             lesson.Addons = lessonContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
@@ -872,7 +872,7 @@ public class LessonService
 
     public Lesson? GetById(int id)
     {
-        var lesson = lessonContext.Lessons.AsNoTracking().SingleOrDefault(p => p.lessonID == id);
+        var lesson = lessonContext.Lessons.OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder).AsNoTracking().SingleOrDefault(p => p.lessonID == id);
         lesson.Addons = lessonContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
         var group = lessonContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == lesson.groupID);
         group.Students = lessonContext.Students.AsNoTracking().ToList().Where(p => p.groupID == group.groupID).OrderBy(p => p.fullNameStudent);
@@ -885,7 +885,7 @@ public class LessonService
 
     public IEnumerable<Lesson> GetByTeacherId(int id)
     {
-        var lessons = lessonContext.Lessons.AsNoTracking().ToList().Where(p => p.teacherID == id).OrderBy(p => p.subjectID);
+        var lessons = lessonContext.Lessons.AsNoTracking().ToList().Where(p => p.teacherID == id).OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder);
         foreach (var lesson in lessons)
         {
             lesson.Addons = lessonContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
@@ -901,7 +901,7 @@ public class LessonService
 
     public IEnumerable<Lesson> GetByGroupId(int id)
     {
-        var lessons = lessonContext.Lessons.AsNoTracking().ToList().Where(p => p.groupID == id).OrderBy(p => p.subjectID);
+        var lessons = lessonContext.Lessons.AsNoTracking().ToList().Where(p => p.groupID == id).OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder);
         foreach (var lesson in lessons)
         {
             lesson.Addons = lessonContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
@@ -917,7 +917,7 @@ public class LessonService
 
     public IEnumerable<Lesson> GetBySubjectId(int id)
     {
-        var lessons = lessonContext.Lessons.AsNoTracking().ToList().Where(p => p.subjectID == id).OrderBy(p => p.subjectID);
+        var lessons = lessonContext.Lessons.AsNoTracking().ToList().Where(p => p.subjectID == id).OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder);
         foreach (var lesson in lessons)
         {
             lesson.Addons = lessonContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
@@ -947,6 +947,30 @@ public class LessonService
             throw new InvalidOperationException("There some problem.");
 
         lessonToUpdate.classroom = newClass;
+
+        lessonContext.SaveChanges();
+    }
+
+    public void weekdayUpdate(int id, string newWeekday)
+    {
+        var lessonToUpdate = lessonContext.Lessons.Find(id);
+
+        if (lessonToUpdate is null || newWeekday is null)
+            throw new InvalidOperationException("There some problem.");
+
+        lessonToUpdate.weekdays = Int32.Parse(newWeekday);
+
+        lessonContext.SaveChanges();
+    }
+
+    public void dayOrderUpdate(int id, string newDayOrder)
+    {
+        var lessonToUpdate = lessonContext.Lessons.Find(id);
+
+        if (lessonToUpdate is null || newDayOrder is null)
+            throw new InvalidOperationException("There some problem.");
+
+        lessonToUpdate.dayOrder = Int32.Parse(newDayOrder);
 
         lessonContext.SaveChanges();
     }
@@ -1039,7 +1063,7 @@ public class StudentService
             var journals = studentContext.Journals.AsNoTracking().ToList().Where(p => p.studentID == student.studentID);
             foreach (var journal in journals)
             {
-                var lesson = studentContext.Lessons.AsNoTracking().SingleOrDefault(p => p.lessonID == journal.lessonID);
+                var lesson = studentContext.Lessons.OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder).AsNoTracking().SingleOrDefault(p => p.lessonID == journal.lessonID);
                 lesson.Addons = studentContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
                 lesson.Subject = studentContext.Subjects.AsNoTracking().SingleOrDefault(p => p.subjectID == lesson.subjectID);
                 lesson.Teacher = studentContext.Teachers.AsNoTracking().SingleOrDefault(p => p.teacherID == lesson.teacherID);
@@ -1058,7 +1082,7 @@ public class StudentService
         var journals = studentContext.Journals.AsNoTracking().ToList().Where(p => p.studentID == student.studentID);
         foreach (var journal in journals)
         {
-            var lesson = studentContext.Lessons.AsNoTracking().SingleOrDefault(p => p.lessonID == journal.lessonID);
+            var lesson = studentContext.Lessons.OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder).AsNoTracking().SingleOrDefault(p => p.lessonID == journal.lessonID);
             lesson.Addons = studentContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
             lesson.Subject = studentContext.Subjects.AsNoTracking().SingleOrDefault(p => p.subjectID == lesson.subjectID);
             lesson.Teacher = studentContext.Teachers.AsNoTracking().SingleOrDefault(p => p.teacherID == lesson.teacherID);
@@ -1076,7 +1100,7 @@ public class StudentService
         var journals = studentContext.Journals.AsNoTracking().ToList().Where(p => p.studentID == student.studentID);
         foreach (var journal in journals)
         {
-            var lesson = studentContext.Lessons.AsNoTracking().SingleOrDefault(p => p.lessonID == journal.lessonID);
+            var lesson = studentContext.Lessons.OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder).AsNoTracking().SingleOrDefault(p => p.lessonID == journal.lessonID);
             lesson.Addons = studentContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
             lesson.Subject = studentContext.Subjects.AsNoTracking().SingleOrDefault(p => p.subjectID == lesson.subjectID);
             lesson.Teacher = studentContext.Teachers.AsNoTracking().SingleOrDefault(p => p.teacherID == lesson.teacherID);
@@ -1096,7 +1120,7 @@ public class StudentService
             var journals = studentContext.Journals.AsNoTracking().ToList().Where(p => p.studentID == student.studentID);
             foreach (var journal in journals)
             {
-                var lesson = studentContext.Lessons.AsNoTracking().SingleOrDefault(p => p.lessonID == journal.lessonID);
+                var lesson = studentContext.Lessons.OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder).AsNoTracking().SingleOrDefault(p => p.lessonID == journal.lessonID);
                 lesson.Addons = studentContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
                 lesson.Subject = studentContext.Subjects.AsNoTracking().SingleOrDefault(p => p.subjectID == lesson.subjectID);
                 lesson.Teacher = studentContext.Teachers.AsNoTracking().SingleOrDefault(p => p.teacherID == lesson.teacherID);
@@ -1283,7 +1307,7 @@ public class TeacherService
         var teachers = teacherContext.Teachers.AsNoTracking().ToList().OrderBy(p => p.fullNameTeacher);
         foreach (var teacher in teachers)
         {
-            var lessons = teacherContext.Lessons.AsNoTracking().ToList().Where(p => p.teacherID == teacher.teacherID);
+            var lessons = teacherContext.Lessons.AsNoTracking().ToList().Where(p => p.teacherID == teacher.teacherID).OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder);
             foreach (var lesson in lessons)
             {
                 lesson.Addons = teacherContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
@@ -1302,7 +1326,7 @@ public class TeacherService
     public Teacher? GetById(int id)
     {
         var teacher = teacherContext.Teachers.AsNoTracking().SingleOrDefault(p => p.teacherID == id);
-        var lessons = teacherContext.Lessons.AsNoTracking().ToList().Where(p => p.teacherID == teacher.teacherID);
+        var lessons = teacherContext.Lessons.AsNoTracking().ToList().Where(p => p.teacherID == teacher.teacherID).OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder);
         foreach (var lesson in lessons)
         {
             lesson.Addons = teacherContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
@@ -1320,7 +1344,7 @@ public class TeacherService
     public Teacher? GetByAuthToken(int authToken)
     {
         var teacher = teacherContext.Teachers.AsNoTracking().SingleOrDefault(p => p.authToken == authToken);
-        var lessons = teacherContext.Lessons.AsNoTracking().ToList().Where(p => p.teacherID == teacher.teacherID);
+        var lessons = teacherContext.Lessons.AsNoTracking().ToList().Where(p => p.teacherID == teacher.teacherID).OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder);
         foreach (var lesson in lessons)
         {
             lesson.Addons = teacherContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
@@ -1340,7 +1364,7 @@ public class TeacherService
         var teachers = teacherContext.Teachers.AsNoTracking().ToList().Where(p => p.jobID == id).OrderBy(p => p.fullNameTeacher);
         foreach (var teacher in teachers)
         {
-            var lessons = teacherContext.Lessons.AsNoTracking().ToList().Where(p => p.teacherID == teacher.teacherID);
+            var lessons = teacherContext.Lessons.AsNoTracking().ToList().Where(p => p.teacherID == teacher.teacherID).OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder);
             foreach (var lesson in lessons)
             {
                 lesson.Addons = teacherContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);

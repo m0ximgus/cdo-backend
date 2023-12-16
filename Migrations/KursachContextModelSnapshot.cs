@@ -216,6 +216,9 @@ namespace Kursach.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("dayOrder")
+                        .HasColumnType("int");
+
                     b.Property<int?>("groupID")
                         .HasColumnType("int");
 
@@ -223,6 +226,9 @@ namespace Kursach.Migrations
                         .HasColumnType("int");
 
                     b.Property<int?>("teacherID")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("weekdays")
                         .HasColumnType("int");
 
                     b.HasKey("lessonID");
