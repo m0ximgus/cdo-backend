@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Kursach.Models;
 using Microsoft.EntityFrameworkCore.Design;
+using System.Reflection.Metadata;
 
 namespace Kursach.Data;
 

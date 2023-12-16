@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Net.Mail;
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 
@@ -39,12 +40,13 @@ public class Authorization
     public string type { get; set; }
 
     //Nav
-    public Student? Student { get; }
-    public Teacher? Teacher { get; }
-    public Employee? Employee { get; }
+    public Student? Student { get; set; } = null;
+    public Teacher? Teacher { get; set; } = null;
+    public Employee? Employee { get; set; } = null;
 }
 
 [Table("Employees")]
+[Index(nameof(authToken), IsUnique = true)]
 public class Employee
 {
     [Required]
@@ -87,11 +89,9 @@ public class Group
     public string groupName { get; set; }
 
     //Nav
-    public ICollection<Student> Students { get; } = new List<Student>();
-    public List<Lesson> Lessons { get; } = new();
-    public List<Subject> Subjects { get; } = new();
-    public List<Teacher> Teachers { get; } = new();
-    public Journal? Journal { get; }
+    public IEnumerable<Student>? Students { get; set; } = null;
+    public IEnumerable<Lesson>? Lessons { get; set; } = null;
+    public IEnumerable<Journal>? Journal { get; set; } = null;
 }
 
 [Table("JobTitles")]
@@ -106,8 +106,8 @@ public class JobTitle
     public int jobID { get; set; }
 
     //Nav
-    public Teacher? Teacher { get; }
-    public Employee? Employee { get; }
+    public Teacher? Teacher { get; } = null;
+    public Employee? Employee { get; } = null;
 }
 
 [PrimaryKey(nameof(studentID), nameof(groupID), nameof(lessonID))]
@@ -120,7 +120,7 @@ public class Journal
     //FK
     public int groupID { get; set; }
     [ForeignKey("groupID")]
-    public Group? Group { get; set; } = null!;
+    public Group? Group { get; set; } = null;
 
     public int studentID { get; set; }
     [ForeignKey("studentID")]
@@ -154,8 +154,8 @@ public class Lesson
     public Subject? Subject { get; set; } = null;
 
     //Nav
-    public Journal? Journal { get; }
-    public Addon? Addon { get; }
+    public IEnumerable<Journal>? Journals { get; set; } = null;
+    public IEnumerable<Addon>? Addons { get; set; } = null;
 }
 
 [Table("Payments")]
@@ -179,6 +179,7 @@ public class Payment
 }
 
 [Table("Students")]
+[Index(nameof(authToken), IsUnique = true)]
 public class Student
 {
     [Required]
@@ -187,26 +188,27 @@ public class Student
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int studentID { get; set; }
+    [Required]
     public DateTime age { get; set; }
     [Required]
     public DateTime enrollmentDate { get; set; }
     public string contactMailStudent { get; set; }
     public string contactPhoneStudent { get; set; }
+    [Required]
     public bool gender { get; set; }
-
+    [Required]
     public bool budget { get; set; }
     //FK
     public int? groupID { get; set; }
     [ForeignKey("groupID")]
     public Group? Group { get; set;} = null;
-
     public int? authToken { get; set; }
     [ForeignKey("authToken")]
     public Authorization? Authorizations { get; set; } = null;
 
     //Nav
-    public ICollection<Payment> Payments { get; } = new List<Payment>();
-    public ICollection<Journal> Journal { get; } = new List<Journal>();
+    public IEnumerable<Payment>? Payments { get; set; } = null;
+    public IEnumerable<Journal>? Journal { get; set; } = null;
 }
 
 [Table("Subjects")]
@@ -219,12 +221,11 @@ public class Subject
     public int subjectID { get; set; }
 
     //Nav
-    public List<Lesson> Lessons { get; } = new();
-    public List<Group> Groups { get; } = new();
-    public List<Teacher> Teachers { get; } = new();
+    public List<Lesson>? Lessons { get; set; } = null;
 }
 
 [Table("Teachers")]
+[Index(nameof(authToken), IsUnique = true)]
 public class Teacher
 {
     [Required]
@@ -245,8 +246,5 @@ public class Teacher
     public JobTitle? JobTitles { get; set; } = null;
 
     //Nav
-    public List<Lesson> Lessons { get; } = new();
-    public List<Group> Groups { get; } = new();
-    public List<Subject> Subjects { get; } = new();
-    public List<Journal> Journal { get; } = new();
+    public IEnumerable<Lesson>? Lessons { get; set; } = null;
 }
