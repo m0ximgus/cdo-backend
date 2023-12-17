@@ -2,6 +2,7 @@
 using Kursach.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Diagnostics.Eventing.Reader;
 
 namespace Kursach.Services;
 
@@ -300,8 +301,28 @@ public class AuthorizationService
     public void Delete(int id)
     {
         var authToDelete = authContext.Authorizations.Find(id);
+
         if (authToDelete is not null)
         {
+            if (authToDelete.type == "student")
+            {
+                var student = authContext.Students.SingleOrDefault(p => p.authToken == authToDelete.authToken);
+                var payments = authContext.Payments.Where(p => p.studentID == student.studentID);
+                foreach (var payment in payments)
+                    authContext.Payments.Remove(payment);
+                authContext.Students.Remove(student);
+            }
+            else if (authToDelete.type == "teacher")
+            {
+                var teacher = authContext.Teachers.SingleOrDefault(p => p.authToken == authToDelete.authToken);
+                teacher.Lessons = authContext.Lessons.ToList().Where(p => p.teacherID == teacher.teacherID);
+                authContext.Teachers.Remove(teacher);
+            }
+            else if (authToDelete.type == "employee")
+            {
+                var employee = authContext.Employees.SingleOrDefault(p => p.authToken == authToDelete.authToken);
+                authContext.Employees.Remove(employee);
+            }        
             authContext.Authorizations.Remove(authToDelete);
             authContext.SaveChanges();
         }
@@ -596,6 +617,10 @@ public class GroupService
         var groupToDelete = groupContext.Groups.Find(id);
         if (groupToDelete is not null)
         {
+            groupToDelete.Students = groupContext.Students.ToList().Where(p => p.groupID == groupToDelete.groupID);
+            var lessons = groupContext.Lessons.ToList().Where(p => p.groupID == groupToDelete.groupID);
+            foreach (var lesson in lessons)
+                groupContext.Lessons.Remove(lesson);
             groupContext.Groups.Remove(groupToDelete);
             groupContext.SaveChanges();
         }
@@ -634,6 +659,10 @@ public class JobTitleService
         var jobTitleToDelete = jobTitleContext.JobTitles.Find(id);
         if (jobTitleToDelete is not null)
         {
+            var person = jobTitleContext.Teachers.ToList().Where(p => p.jobID == jobTitleToDelete.jobID);
+            if (person is Teacher)
+                jobTitleToDelete.Teachers = person;
+            else jobTitleToDelete.Employees = jobTitleContext.Employees.ToList().Where(p => p.jobID == jobTitleToDelete.jobID);
             jobTitleContext.JobTitles.Remove(jobTitleToDelete);
             jobTitleContext.SaveChanges();
         }
@@ -681,9 +710,7 @@ public class JournalService
             journal.Group = journalContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == journal.groupID);
             var lesson = journalContext.Lessons.OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder).AsNoTracking().SingleOrDefault(p => p.lessonID == journal.lessonID);
             lesson.Addons = journalContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
-            lesson.Group = journalContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == lesson.groupID);
             lesson.Subject = journalContext.Subjects.AsNoTracking().SingleOrDefault(p => p.subjectID == lesson.subjectID);
-            lesson.Journals = journalContext.Journals.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
             lesson.Teacher = journalContext.Teachers.AsNoTracking().SingleOrDefault(p => p.teacherID == lesson.teacherID);
             journal.Lessons = lesson;
             journal.Students = journalContext.Students.AsNoTracking().SingleOrDefault(p => p.studentID == journal.studentID);
@@ -697,9 +724,7 @@ public class JournalService
         journal.Group = journalContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == journal.groupID);
         var lesson = journalContext.Lessons.OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder).AsNoTracking().SingleOrDefault(p => p.lessonID == journal.lessonID);
         lesson.Addons = journalContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
-        lesson.Group = journalContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == lesson.groupID);
         lesson.Subject = journalContext.Subjects.AsNoTracking().SingleOrDefault(p => p.subjectID == lesson.subjectID);
-        lesson.Journals = journalContext.Journals.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
         lesson.Teacher = journalContext.Teachers.AsNoTracking().SingleOrDefault(p => p.teacherID == lesson.teacherID);
         journal.Lessons = lesson;
         journal.Students = journalContext.Students.AsNoTracking().SingleOrDefault(p => p.studentID == journal.studentID);
@@ -714,9 +739,7 @@ public class JournalService
             journal.Group = journalContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == journal.groupID);
             var lesson = journalContext.Lessons.OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder).AsNoTracking().SingleOrDefault(p => p.lessonID == journal.lessonID);
             lesson.Addons = journalContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
-            lesson.Group = journalContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == lesson.groupID);
             lesson.Subject = journalContext.Subjects.AsNoTracking().SingleOrDefault(p => p.subjectID == lesson.subjectID);
-            lesson.Journals = journalContext.Journals.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
             lesson.Teacher = journalContext.Teachers.AsNoTracking().SingleOrDefault(p => p.teacherID == lesson.teacherID);
             journal.Lessons = lesson;
             journal.Students = journalContext.Students.AsNoTracking().SingleOrDefault(p => p.studentID == journal.studentID);
@@ -732,9 +755,7 @@ public class JournalService
             journal.Group = journalContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == journal.groupID);
             var lesson = journalContext.Lessons.OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder).AsNoTracking().SingleOrDefault(p => p.lessonID == journal.lessonID);
             lesson.Addons = journalContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
-            lesson.Group = journalContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == lesson.groupID);
             lesson.Subject = journalContext.Subjects.AsNoTracking().SingleOrDefault(p => p.subjectID == lesson.subjectID);
-            lesson.Journals = journalContext.Journals.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
             lesson.Teacher = journalContext.Teachers.AsNoTracking().SingleOrDefault(p => p.teacherID == lesson.teacherID);
             journal.Lessons = lesson;
             journal.Students = journalContext.Students.AsNoTracking().SingleOrDefault(p => p.studentID == journal.studentID);
@@ -750,9 +771,7 @@ public class JournalService
             journal.Group = journalContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == journal.groupID);
             var lesson = journalContext.Lessons.OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder).AsNoTracking().SingleOrDefault(p => p.lessonID == journal.lessonID);
             lesson.Addons = journalContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
-            lesson.Group = journalContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == lesson.groupID);
             lesson.Subject = journalContext.Subjects.AsNoTracking().SingleOrDefault(p => p.subjectID == lesson.subjectID);
-            lesson.Journals = journalContext.Journals.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
             lesson.Teacher = journalContext.Teachers.AsNoTracking().SingleOrDefault(p => p.teacherID == lesson.teacherID);
             journal.Lessons = lesson;
             journal.Students = journalContext.Students.AsNoTracking().SingleOrDefault(p => p.studentID == journal.studentID);
@@ -768,9 +787,7 @@ public class JournalService
             journal.Group = journalContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == journal.groupID);
             var lesson = journalContext.Lessons.OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder).AsNoTracking().SingleOrDefault(p => p.lessonID == journal.lessonID);
             lesson.Addons = journalContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
-            lesson.Group = journalContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == lesson.groupID);
             lesson.Subject = journalContext.Subjects.AsNoTracking().SingleOrDefault(p => p.subjectID == lesson.subjectID);
-            lesson.Journals = journalContext.Journals.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
             lesson.Teacher = journalContext.Teachers.AsNoTracking().SingleOrDefault(p => p.teacherID == lesson.teacherID);
             journal.Lessons = lesson;
             journal.Students = journalContext.Students.AsNoTracking().SingleOrDefault(p => p.studentID == journal.studentID);
@@ -839,6 +856,7 @@ public class JournalService
         var journalToDelete = journalContext.Journals.SingleOrDefault(p => p.studentID == studentId && p.groupID == groupId && p.lessonID == lessonId);
         if (journalToDelete is not null)
         {
+            journalToDelete.Lessons = journalContext.Lessons.SingleOrDefault(p => p.lessonID == journalToDelete.lessonID);
             journalContext.Journals.Remove(journalToDelete);
             journalContext.SaveChanges();
         }
@@ -1199,6 +1217,9 @@ public class StudentService
         if (studentToDelete is not null)
         {
             var authToDelete = studentContext.Authorizations.SingleOrDefault(p => p.authToken == studentToDelete.authToken);
+            var payments = studentContext.Payments.Where(p => p.studentID == studentToDelete.studentID);
+            foreach (var payment in payments)
+                studentContext.Payments.Remove(payment);
             studentContext.Students.Remove(studentToDelete);
             studentContext.Authorizations.Remove(authToDelete);
             studentContext.SaveChanges();
@@ -1356,10 +1377,13 @@ public class SubjectService
 
     public void Delete(int id)
     {
-        var employeeToDelete = subjectContext.Subjects.Find(id);
-        if (employeeToDelete is not null)
+        var subjectToDelete = subjectContext.Subjects.Find(id);
+        if (subjectToDelete is not null)
         {
-            subjectContext.Subjects.Remove(employeeToDelete);
+            var lessons = subjectContext.Lessons.ToList().Where(p => p.subjectID == subjectToDelete.subjectID);
+            foreach (var lesson in lessons)
+                subjectContext.Lessons.Remove(lesson);
+            subjectContext.Subjects.Remove(subjectToDelete);
             subjectContext.SaveChanges();
         }
     }
@@ -1514,6 +1538,7 @@ public class TeacherService
         if (teacherToDelete is not null)
         {
             var authToDelete = teacherContext.Authorizations.SingleOrDefault(p => p.authToken == teacherToDelete.authToken);
+            teacherToDelete.Lessons = teacherContext.Lessons.ToList().Where(p => p.teacherID == teacherToDelete.teacherID);
             teacherContext.Teachers.Remove(teacherToDelete);
             teacherContext.Authorizations.Remove(authToDelete);
             teacherContext.SaveChanges();

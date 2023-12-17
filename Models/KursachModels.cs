@@ -106,8 +106,8 @@ public class JobTitle
     public int jobID { get; set; }
 
     //Nav
-    public Teacher? Teacher { get; } = null;
-    public Employee? Employee { get; } = null;
+    public IEnumerable<Teacher>? Teachers { get; set; } = null;
+    public IEnumerable<Employee>? Employees { get; set; } = null;
 }
 
 [PrimaryKey(nameof(studentID), nameof(groupID), nameof(lessonID))]
