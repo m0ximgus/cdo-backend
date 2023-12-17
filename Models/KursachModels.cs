@@ -173,6 +173,7 @@ public class Payment
     [Required]
     public DateTime paymentDate { get; set; }
     public bool paymentDirection { get; set; }
+    public bool? isPaid { get; set; }
 
     //FK
     public int? studentID { get; set; }
@@ -200,6 +201,8 @@ public class Student
     public bool gender { get; set; }
     [Required]
     public bool budget { get; set; }
+    [Required]
+    public bool hostelRent { get; set; }
     //FK
     public int? groupID { get; set; }
     [ForeignKey("groupID")]

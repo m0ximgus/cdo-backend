@@ -250,6 +250,9 @@ namespace Kursach.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("paymentID"));
 
+                    b.Property<bool?>("isPaid")
+                        .HasColumnType("bit");
+
                     b.Property<double>("paymentCost")
                         .HasColumnType("float");
 
@@ -311,6 +314,10 @@ namespace Kursach.Migrations
 
                     b.Property<int?>("groupID")
                         .HasColumnType("int");
+
+                    b.Property<bool?>("hostelRent")
+                        .IsRequired()
+                        .HasColumnType("bit");
 
                     b.HasKey("studentID");
 

@@ -751,6 +751,17 @@ public class PaymentController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = payment!.studentID }, payment);
     }
 
+    [HttpPut("{id}/{state}")]
+    public IActionResult Update(int id, bool value)
+    {
+        var updatingPayment = paymentService.GetById(id);
+        if (updatingPayment is null)
+            return BadRequest();
+
+        paymentService.isPaidUpdate(id, value);
+        return NoContent();
+    }
+
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
@@ -861,6 +872,9 @@ public class StudentController : ControllerBase
                 break;
             case 7:
                 studentService.genderUpdate(id, value);
+                break;
+            case 8:
+                studentService.hostelRentUpdate(id, value);
                 break;
             default:
                 break;

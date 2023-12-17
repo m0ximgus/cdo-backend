@@ -1043,6 +1043,17 @@ public class PaymentService
             paymentContext.SaveChanges();
         }
     }
+
+    public void isPaidUpdate(int id, bool state)
+    {
+        var paymentToUpdate = paymentContext.Payments.Find(id);
+        if (paymentToUpdate is null)
+            throw new InvalidOperationException("There some problem.");
+
+        paymentToUpdate.isPaid = state;
+
+        paymentContext.SaveChanges();
+    }
 }
 
 public class StudentService
@@ -1237,6 +1248,18 @@ public class StudentService
             throw new InvalidOperationException("There some problem.");
 
         studentToUpdate.gender = bool.Parse(newGender);
+
+        studentContext.SaveChanges();
+    }
+
+    public void hostelRentUpdate(int id, string newState)
+    {
+        var studentToUpdate = studentContext.Students.Find(id);
+
+        if (studentToUpdate is null || newState is null)
+            throw new InvalidOperationException("There some problem.");
+
+        studentToUpdate.hostelRent = bool.Parse(newState);
 
         studentContext.SaveChanges();
     }
