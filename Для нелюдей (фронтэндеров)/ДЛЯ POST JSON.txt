@@ -54,7 +54,8 @@
   "gender": true,
   "groupID": 1,
   "authToken": 1,
-  "budget": false
+  "budget": false,
+  "hostelRent": false
 }
 
 //////////////////////////Teacher/////////////////////////////////// +

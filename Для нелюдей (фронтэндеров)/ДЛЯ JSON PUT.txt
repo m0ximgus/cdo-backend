@@ -37,7 +37,7 @@ parametr 2 = weekdayUpdate
 parametr 3 = dayOrderUpdate
 
 /////////Payment/////////////
-Мы за честные выплаты, ничего не меняем
+only isPaid update
 
 /////////Student/////////////
 Paramter 1 = nameUpdate
@@ -47,6 +47,8 @@ Parametr 4 = enrollmentDateUpdate
 Parametr 5 = mailUpdate
 Parametr 6 = phoneUpdate
 Parametr 7 = genderUpdate
+Parametr 8 = budgetUpdate
+Parametr 9 = hostelRentUpdate
 
 /////////Subject/////////////
 Only name update

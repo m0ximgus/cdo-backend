@@ -1143,17 +1143,54 @@ public class StudentService
         return students;
     }
 
+    public IEnumerable<Student>? GetByBudget(bool budget)
+    {
+        var students = studentContext.Students.AsNoTracking().ToList().Where(p => p.budget == budget);
+        foreach (var student in students)
+        {
+            student.Group = studentContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == student.groupID);
+            var journals = studentContext.Journals.AsNoTracking().ToList().Where(p => p.studentID == student.studentID);
+            foreach (var journal in journals)
+            {
+                var lesson = studentContext.Lessons.OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder).AsNoTracking().SingleOrDefault(p => p.lessonID == journal.lessonID);
+                lesson.Addons = studentContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
+                lesson.Subject = studentContext.Subjects.AsNoTracking().SingleOrDefault(p => p.subjectID == lesson.subjectID);
+                lesson.Teacher = studentContext.Teachers.AsNoTracking().SingleOrDefault(p => p.teacherID == lesson.teacherID);
+                journal.Lessons = lesson;
+            }
+            student.Journal = journals;
+            student.Payments = studentContext.Payments.AsNoTracking().ToList().Where(p => p.studentID == student.studentID);
+        }
+        return students;
+    }
+
+    public IEnumerable<Student>? GetByHostelRent(bool rent)
+    {
+        var students = studentContext.Students.AsNoTracking().ToList().Where(p => p.hostelRent == rent);
+        foreach (var student in students)
+        {
+            student.Group = studentContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == student.groupID);
+            var journals = studentContext.Journals.AsNoTracking().ToList().Where(p => p.studentID == student.studentID);
+            foreach (var journal in journals)
+            {
+                var lesson = studentContext.Lessons.OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder).AsNoTracking().SingleOrDefault(p => p.lessonID == journal.lessonID);
+                lesson.Addons = studentContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
+                lesson.Subject = studentContext.Subjects.AsNoTracking().SingleOrDefault(p => p.subjectID == lesson.subjectID);
+                lesson.Teacher = studentContext.Teachers.AsNoTracking().SingleOrDefault(p => p.teacherID == lesson.teacherID);
+                journal.Lessons = lesson;
+            }
+            student.Journal = journals;
+            student.Payments = studentContext.Payments.AsNoTracking().ToList().Where(p => p.studentID == student.studentID);
+        }
+        return students;
+    }
+
     public Student Add(Student student)
     {
         studentContext.Students.Add(student);
         studentContext.SaveChanges();
 
         return student;
-    }
-
-    public IEnumerable<Student>? GetByBudget(bool budget)
-    {
-        return studentContext.Students.AsNoTracking().ToList().Where(p => p.budget == budget);
     }
 
     public void Delete(int id)
@@ -1248,6 +1285,18 @@ public class StudentService
             throw new InvalidOperationException("There some problem.");
 
         studentToUpdate.gender = bool.Parse(newGender);
+
+        studentContext.SaveChanges();
+    }
+
+    public void budgetUpdate(int id, string newBudget)
+    {
+        var studentToUpdate = studentContext.Students.Find(id);
+
+        if (studentToUpdate is null || newBudget is null)
+            throw new InvalidOperationException("There some problem.");
+
+        studentToUpdate.budget = bool.Parse(newBudget);
 
         studentContext.SaveChanges();
     }

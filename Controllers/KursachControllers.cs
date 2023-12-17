@@ -752,13 +752,13 @@ public class PaymentController : ControllerBase
     }
 
     [HttpPut("{id}/{state}")]
-    public IActionResult Update(int id, bool value)
+    public IActionResult Update(int id, bool state)
     {
         var updatingPayment = paymentService.GetById(id);
         if (updatingPayment is null)
             return BadRequest();
 
-        paymentService.isPaidUpdate(id, value);
+        paymentService.isPaidUpdate(id, state);
         return NoContent();
     }
 
@@ -837,6 +837,12 @@ public class StudentController : ControllerBase
         return studentService.GetByBudget(budget);
     }
 
+    [HttpGet("{hostelRent}/hostelRent")]
+    public IEnumerable<Student> GetByHostelRent(bool hostelRent)
+    {
+        return studentService.GetByHostelRent(hostelRent);
+    }
+
     [HttpPost]
     public IActionResult Create(Student newStudent)
     {
@@ -874,6 +880,9 @@ public class StudentController : ControllerBase
                 studentService.genderUpdate(id, value);
                 break;
             case 8:
+                studentService.budgetUpdate(id, value);
+                break;
+            case 9:
                 studentService.hostelRentUpdate(id, value);
                 break;
             default:
