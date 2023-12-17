@@ -1207,7 +1207,16 @@ public class StudentService
     {
         studentContext.Students.Add(student);
         studentContext.SaveChanges();
-
+        var lessons = studentContext.Lessons.ToList().Where(p => p.groupID == student.groupID);
+        foreach (var lesson in lessons)
+        {
+            Journal newJournal = new();
+            newJournal.studentID = student.studentID;
+            newJournal.groupID = studentContext.Groups.SingleOrDefault(p => p.groupID == student.groupID).groupID;
+            newJournal.lessonID = lesson.lessonID;
+            studentContext.Journals.Add(newJournal);
+        }
+        studentContext.SaveChanges();
         return student;
     }
 
@@ -1245,8 +1254,20 @@ public class StudentService
         if (studentToUpdate is null || newGroup is null)
             throw new InvalidOperationException("There some problem.");
 
-        studentToUpdate.groupID = Int32.Parse(newGroup);
+        var oldJournals = studentContext.Journals.ToList().Where(p => p.studentID == studentToUpdate.studentID);
+        foreach (var journal in oldJournals)
+            studentContext.Journals.Remove(journal);
 
+        studentToUpdate.groupID = Int32.Parse(newGroup);
+        var lessons = studentContext.Lessons.ToList().Where(p => p.groupID == studentToUpdate.groupID);
+        foreach (var lesson in lessons)
+        {
+            Journal newJournal = new();
+            newJournal.studentID = studentToUpdate.studentID;
+            newJournal.groupID = studentContext.Groups.SingleOrDefault(p => p.groupID == studentToUpdate.groupID).groupID;
+            newJournal.lessonID = lesson.lessonID;
+            studentContext.Journals.Add(newJournal);
+        }
         studentContext.SaveChanges();
     }
 
