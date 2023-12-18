@@ -24,6 +24,7 @@ builder.Services.AddScoped<LessonService>();
 builder.Services.AddScoped<PaymentService>();
 builder.Services.AddScoped<SubjectService>();
 builder.Services.AddScoped<TeacherService>();
+builder.Services.AddScoped<StudyLoadService>();
 
 builder.Services.AddCors(options =>
 {

@@ -27,6 +27,7 @@ public class KursachContext : DbContext
     public DbSet<Lesson> Lessons => Set<Lesson>();
     public DbSet<Payment> Payments => Set<Payment>();
     public DbSet<Student> Students => Set<Student>();
+    public DbSet<StudyLoad> StudyLoads => Set<StudyLoad>();
     public DbSet<Subject> Subjects => Set<Subject>();
     public DbSet<Teacher> Teachers => Set<Teacher>();
 }

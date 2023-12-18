@@ -910,6 +910,78 @@ public class StudentController : ControllerBase
 
 [ApiController]
 [Route("[controller]")]
+public class StudyLoadController : ControllerBase
+{
+    StudyLoadService studyLoadService;
+
+    public StudyLoadController(StudyLoadService service)
+    {
+        studyLoadService = service;
+    }
+
+    [HttpGet]
+    public IEnumerable<StudyLoad> GetAll()
+    {
+        return studyLoadService.GetAll();
+    }
+
+    [HttpGet("{groupId}")]
+    public ActionResult<StudyLoad> GetByGroupId(int groupId)
+    {
+        var studyLoad = studyLoadService.GetByGroupId(groupId);
+        if (studyLoad is not null)
+        {
+            return studyLoad;
+        }
+        else { return NotFound(); }
+    }
+
+    [HttpPost]
+    public IActionResult Create(StudyLoad newStudyLoad)
+    {
+        var studyLoad = studyLoadService.Add(newStudyLoad);
+        return Ok();
+    }
+
+    [HttpPut("{id}/{parametr}/{value}")]
+    public IActionResult Update(int id, int parametr, string value)
+    {
+        var updatingStudyLoad = studyLoadService.GetById(id);
+        if (updatingStudyLoad is null)
+            return BadRequest();
+        switch (parametr)
+        {
+            case 1:
+                studyLoadService.studyLoadHeaderUpdate(id, value);
+                break;
+            case 2:
+                studyLoadService.studyLoadDescriptionUpdate(id, value); ;
+                break;
+            default:
+                break;
+        }
+        return NoContent();
+    }
+
+    [HttpDelete("{id}")]
+    public IActionResult Delete(int id)
+    {
+        var studyLoad = studyLoadService.GetByGroupId(id);
+
+        if (studyLoad is not null)
+        {
+            studyLoadService.Delete(id);
+            return Ok();
+        }
+        else
+        {
+            return NotFound();
+        }
+    }
+}
+
+[ApiController]
+[Route("[controller]")]
 public class SubjectController : ControllerBase
 {
     SubjectService subjectService;
@@ -958,9 +1030,9 @@ public class SubjectController : ControllerBase
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
-        var student = subjectService.GetById(id);
+        var subject = subjectService.GetById(id);
 
-        if (student is not null)
+        if (subject is not null)
         {
             subjectService.Delete(id);
             return Ok();
@@ -1059,9 +1131,9 @@ public class TeacherController : ControllerBase
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
-        var student = teacherService.GetById(id);
+        var teacher = teacherService.GetById(id);
 
-        if (student is not null)
+        if (teacher is not null)
         {
             teacherService.Delete(id);
             return Ok();

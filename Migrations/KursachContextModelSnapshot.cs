@@ -315,8 +315,7 @@ namespace Kursach.Migrations
                     b.Property<int?>("groupID")
                         .HasColumnType("int");
 
-                    b.Property<bool?>("hostelRent")
-                        .IsRequired()
+                    b.Property<bool>("hostelRent")
                         .HasColumnType("bit");
 
                     b.HasKey("studentID");
@@ -328,6 +327,24 @@ namespace Kursach.Migrations
                     b.HasIndex("groupID");
 
                     b.ToTable("Students");
+                });
+
+            modelBuilder.Entity("Kursach.Models.StudyLoad", b =>
+                {
+                    b.Property<int>("groupID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("studyLoadDescription")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("studyLoadHeader")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("groupID");
+
+                    b.ToTable("StudyLoads");
                 });
 
             modelBuilder.Entity("Kursach.Models.Subject", b =>
@@ -402,7 +419,7 @@ namespace Kursach.Migrations
                         .HasForeignKey("Kursach.Models.Employee", "authToken");
 
                     b.HasOne("Kursach.Models.JobTitle", "JobTitles")
-                        .WithMany()
+                        .WithMany("Employees")
                         .HasForeignKey("jobID");
 
                     b.Navigation("Authorizations");
@@ -482,6 +499,17 @@ namespace Kursach.Migrations
                     b.Navigation("Group");
                 });
 
+            modelBuilder.Entity("Kursach.Models.StudyLoad", b =>
+                {
+                    b.HasOne("Kursach.Models.Group", "Group")
+                        .WithOne("StudyLoad")
+                        .HasForeignKey("Kursach.Models.StudyLoad", "groupID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Group");
+                });
+
             modelBuilder.Entity("Kursach.Models.Teacher", b =>
                 {
                     b.HasOne("Kursach.Models.Authorization", "Authorizations")
@@ -489,7 +517,7 @@ namespace Kursach.Migrations
                         .HasForeignKey("Kursach.Models.Teacher", "authToken");
 
                     b.HasOne("Kursach.Models.JobTitle", "JobTitles")
-                        .WithMany()
+                        .WithMany("Teachers")
                         .HasForeignKey("jobID");
 
                     b.Navigation("Authorizations");
@@ -513,6 +541,15 @@ namespace Kursach.Migrations
                     b.Navigation("Lessons");
 
                     b.Navigation("Students");
+
+                    b.Navigation("StudyLoad");
+                });
+
+            modelBuilder.Entity("Kursach.Models.JobTitle", b =>
+                {
+                    b.Navigation("Employees");
+
+                    b.Navigation("Teachers");
                 });
 
             modelBuilder.Entity("Kursach.Models.Lesson", b =>

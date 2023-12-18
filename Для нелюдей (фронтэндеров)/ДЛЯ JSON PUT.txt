@@ -50,6 +50,10 @@ Parametr 7 = genderUpdate
 Parametr 8 = budgetUpdate
 Parametr 9 = hostelRentUpdate
 
+/////////StudyLoad////////////
+Parametr 1 = studyLoadHeaderUpdate
+Parametr 2 = studyLoadDescriptionUpdate
+
 /////////Subject/////////////
 Only name update
 

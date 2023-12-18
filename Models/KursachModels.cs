@@ -92,6 +92,7 @@ public class Group
     public IEnumerable<Student>? Students { get; set; } = null;
     public IEnumerable<Lesson>? Lessons { get; set; } = null;
     public IEnumerable<Journal>? Journal { get; set; } = null;
+    public StudyLoad? StudyLoad { get; set; }
 }
 
 [Table("JobTitles")]
@@ -214,6 +215,19 @@ public class Student
     //Nav
     public IEnumerable<Payment>? Payments { get; set; } = null;
     public IEnumerable<Journal>? Journal { get; set; } = null;
+}
+
+[PrimaryKey(nameof(groupID))]
+[Table("StudyLoads")]
+public class StudyLoad
+{
+    public string studyLoadHeader { get; set; }
+    public string studyLoadDescription { get; set; }
+
+    //FK
+    public int groupID { get; set; }
+    [ForeignKey("groupID")]
+    public Group? Group { get; set; } = null;
 }
 
 [Table("Subjects")]

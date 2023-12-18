@@ -572,6 +572,7 @@ public class GroupService
             }
             group.Lessons = lessons;
             group.Journal = groupContext.Journals.AsNoTracking().ToList().Where(p => p.groupID == group.groupID);
+            group.StudyLoad = groupContext.StudyLoads.AsNoTracking().SingleOrDefault(p => p.groupID == group.groupID);
         }
         return groups;
     }
@@ -589,6 +590,7 @@ public class GroupService
         }
         group.Lessons = lessons;
         group.Journal = groupContext.Journals.AsNoTracking().ToList().Where(p => p.groupID == group.groupID);
+        group.StudyLoad = groupContext.StudyLoads.AsNoTracking().SingleOrDefault(p => p.groupID == group.groupID);
         return group;
     }
 
@@ -1356,6 +1358,76 @@ public class StudentService
     }
 }
 
+public class StudyLoadService
+{
+    private readonly KursachContext studyLoadContext;
+
+    public StudyLoadService(KursachContext context)
+    {
+        studyLoadContext = context;
+    }
+
+    public IEnumerable<StudyLoad> GetAll()
+    {
+        var studyLoads = studyLoadContext.StudyLoads.AsNoTracking().ToList();
+        foreach (var studyLoad in studyLoads)
+            studyLoad.Group = studyLoadContext.Groups.SingleOrDefault(p => p.groupID == studyLoad.groupID);
+        return studyLoads;
+    }
+
+    public StudyLoad? GetById(int id)
+    {
+        var studyLoad = studyLoadContext.StudyLoads.SingleOrDefault(p => p.groupID == id);
+        return studyLoad;
+    }
+
+    public StudyLoad? GetByGroupId(int id)
+    {
+        var studyLoad = studyLoadContext.StudyLoads.AsNoTracking().SingleOrDefault(p => p.groupID == id);
+        studyLoad.Group = studyLoadContext.Groups.SingleOrDefault(p => p.groupID == studyLoad.groupID);
+        return studyLoad;
+    }
+
+    public StudyLoad Add(StudyLoad studyLoad)
+    {
+        studyLoadContext.StudyLoads.Add(studyLoad);
+        studyLoadContext.SaveChanges();
+        return studyLoad;
+    }
+
+    public void studyLoadHeaderUpdate(int id, string newHeader)
+    {
+        var studyLoadToUpdate = studyLoadContext.StudyLoads.SingleOrDefault(p => p.groupID == id);
+
+        if (studyLoadToUpdate is null || newHeader is null)
+            throw new InvalidOperationException("There some problem.");
+
+        studyLoadToUpdate.studyLoadHeader = newHeader;
+        studyLoadContext.SaveChanges();
+    }
+
+    public void studyLoadDescriptionUpdate(int id, string newDescription)
+    {
+        var studyLoadToUpdate = studyLoadContext.StudyLoads.SingleOrDefault(p => p.groupID == id);
+
+        if (studyLoadToUpdate is null || newDescription is null)
+            throw new InvalidOperationException("There some problem.");
+
+        studyLoadToUpdate.studyLoadDescription = newDescription;
+        studyLoadContext.SaveChanges();
+    }
+
+    public void Delete(int id)
+    {
+        var studyLoadToDelete = studyLoadContext.StudyLoads.AsNoTracking().SingleOrDefault(p => p.groupID == id);
+        if (studyLoadToDelete is not null)
+        {
+            studyLoadContext.StudyLoads.Remove(studyLoadToDelete);
+            studyLoadContext.SaveChanges();
+        }
+    }
+}
+
 public class SubjectService
 {
     private readonly KursachContext subjectContext;
@@ -1376,12 +1448,12 @@ public class SubjectService
     }
 
 
-    public Subject Add(Subject employee)
+    public Subject Add(Subject subject)
     {
-        subjectContext.Subjects.Add(employee);
+        subjectContext.Subjects.Add(subject);
         subjectContext.SaveChanges();
 
-        return employee;
+        return subject;
     }
 
     public void nameUpdate(int id, string newName)
