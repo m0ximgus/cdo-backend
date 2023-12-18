@@ -341,7 +341,7 @@ public class EventController : ControllerBase
                 eventService.headerUpdate(id, value);
                 break;
             case 2:
-                eventService.discriptionUpdate(id, value);
+                eventService.descriptionUpdate(id, value);
                 break;
             case 3:
                 eventService.dateUpdate(id, value);

@@ -107,41 +107,48 @@ public class AuthorizationService
             if (auth.type == "student")
             {
                 auth.Student = authContext.Students.AsNoTracking().SingleOrDefault(p => p.authToken == auth.authToken);
-                auth.Student.Group = authContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == auth.Student.groupID);
-                var journals = authContext.Journals.AsNoTracking().ToList().Where(p => p.studentID == auth.Student.studentID);
-                foreach (var journal in journals)
+                if (auth.Student is not null)
                 {
-                    var lesson = authContext.Lessons.OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder).AsNoTracking().SingleOrDefault(p => p.lessonID == journal.lessonID);
-                    lesson.Addons = authContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
-                    lesson.Subject = authContext.Subjects.AsNoTracking().SingleOrDefault(p => p.subjectID == lesson.subjectID);
-                    lesson.Teacher = authContext.Teachers.AsNoTracking().SingleOrDefault(p => p.teacherID == lesson.teacherID);
-                    journal.Lessons = lesson;
+                    auth.Student.Group = authContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == auth.Student.groupID);
+                    var journals = authContext.Journals.AsNoTracking().ToList().Where(p => p.studentID == auth.Student.studentID);
+                    foreach (var journal in journals)
+                    {
+                        var lesson = authContext.Lessons.OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder).AsNoTracking().SingleOrDefault(p => p.lessonID == journal.lessonID);
+                        lesson.Addons = authContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
+                        lesson.Subject = authContext.Subjects.AsNoTracking().SingleOrDefault(p => p.subjectID == lesson.subjectID);
+                        lesson.Teacher = authContext.Teachers.AsNoTracking().SingleOrDefault(p => p.teacherID == lesson.teacherID);
+                        journal.Lessons = lesson;
+                    }
+                    auth.Student.Journal = journals;
+                    auth.Student.Payments = authContext.Payments.AsNoTracking().ToList().Where(p => p.studentID == auth.Student.studentID);
                 }
-                auth.Student.Journal = journals;
-                auth.Student.Payments = authContext.Payments.AsNoTracking().ToList().Where(p => p.studentID == auth.Student.studentID);
             }
             else if (auth.type == "teacher")
             {
                 auth.Teacher = authContext.Teachers.AsNoTracking().SingleOrDefault(p => p.authToken == auth.authToken);
-                auth.Teacher.JobTitles = authContext.JobTitles.AsNoTracking().SingleOrDefault(p => p.jobID == auth.Teacher.jobID);
-                var lessons = authContext.Lessons.AsNoTracking().ToList().Where(p => p.teacherID == auth.Teacher.teacherID).OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder) ;
-                foreach (var lesson in lessons)
+                if (auth.Teacher is not null)
                 {
-                    lesson.Addons = authContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
-                    lesson.Group = authContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == lesson.groupID);
-                    lesson.Subject = authContext.Subjects.AsNoTracking().SingleOrDefault(p => p.subjectID == lesson.subjectID);
-                    var journals = authContext.Journals.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
-                    foreach (var journal in journals)
-                        journal.Students = authContext.Students.AsNoTracking().SingleOrDefault(p => p.studentID == journal.studentID);
-                    journals.OrderBy(p => p.Students.fullNameStudent);
-                    lesson.Journals = journals;
+                    auth.Teacher.JobTitles = authContext.JobTitles.AsNoTracking().SingleOrDefault(p => p.jobID == auth.Teacher.jobID);
+                    var lessons = authContext.Lessons.AsNoTracking().ToList().Where(p => p.teacherID == auth.Teacher.teacherID).OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder);
+                    foreach (var lesson in lessons)
+                    {
+                        lesson.Addons = authContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
+                        lesson.Group = authContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == lesson.groupID);
+                        lesson.Subject = authContext.Subjects.AsNoTracking().SingleOrDefault(p => p.subjectID == lesson.subjectID);
+                        var journals = authContext.Journals.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
+                        foreach (var journal in journals)
+                            journal.Students = authContext.Students.AsNoTracking().SingleOrDefault(p => p.studentID == journal.studentID);
+                        journals.OrderBy(p => p.Students.fullNameStudent);
+                        lesson.Journals = journals;
+                    }
+                    auth.Teacher.Lessons = lessons;
                 }
-                auth.Teacher.Lessons = lessons;
             }
             else if (auth.type == "employee")
             {
                 auth.Employee = authContext.Employees.AsNoTracking().SingleOrDefault(p => p.authToken == auth.authToken);
-                auth.Employee.JobTitles = authContext.JobTitles.AsNoTracking().SingleOrDefault(p => p.jobID == auth.Employee.jobID);
+                if (auth.Employee is not null)
+                    auth.Employee.JobTitles = authContext.JobTitles.AsNoTracking().SingleOrDefault(p => p.jobID == auth.Employee.jobID);
 
             }
         }
@@ -155,100 +162,8 @@ public class AuthorizationService
         if (auth.type == "student")
         {
             auth.Student = authContext.Students.AsNoTracking().SingleOrDefault(p => p.authToken == auth.authToken);
-            auth.Student.Group = authContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == auth.Student.groupID);
-            var journals = authContext.Journals.AsNoTracking().ToList().Where(p => p.studentID == auth.Student.studentID);
-            foreach (var journal in journals)
+            if (auth.Student is not null)
             {
-                var lesson = authContext.Lessons.OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder).AsNoTracking().SingleOrDefault(p => p.lessonID == journal.lessonID);
-                lesson.Addons = authContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
-                lesson.Subject = authContext.Subjects.AsNoTracking().SingleOrDefault(p => p.subjectID == lesson.subjectID);
-                lesson.Teacher = authContext.Teachers.AsNoTracking().SingleOrDefault(p => p.teacherID == lesson.teacherID);
-                journal.Lessons = lesson;
-            }
-            auth.Student.Journal = journals;
-            auth.Student.Payments = authContext.Payments.AsNoTracking().ToList().Where(p => p.studentID == auth.Student.studentID);
-        }
-        else if (auth.type == "teacher")
-        {
-            auth.Teacher = authContext.Teachers.AsNoTracking().SingleOrDefault(p => p.authToken == auth.authToken);
-            auth.Teacher.JobTitles = authContext.JobTitles.AsNoTracking().SingleOrDefault(p => p.jobID == auth.Teacher.jobID);
-            var lessons = authContext.Lessons.AsNoTracking().ToList().Where(p => p.teacherID == auth.Teacher.teacherID).OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder);
-            foreach (var lesson in lessons)
-            {
-                lesson.Addons = authContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
-                lesson.Group = authContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == lesson.groupID);
-                lesson.Subject = authContext.Subjects.AsNoTracking().SingleOrDefault(p => p.subjectID == lesson.subjectID);
-                var journals = authContext.Journals.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
-                foreach (var journal in journals)
-                    journal.Students = authContext.Students.AsNoTracking().SingleOrDefault(p => p.studentID == journal.studentID);
-                journals.OrderBy(p => p.Students.fullNameStudent);
-                lesson.Journals = journals;
-            }
-            auth.Teacher.Lessons = lessons;
-        }
-        else if (auth.type == "employee")
-        {
-            auth.Employee = authContext.Employees.AsNoTracking().SingleOrDefault(p => p.authToken == auth.authToken);
-            auth.Employee.JobTitles = authContext.JobTitles.AsNoTracking().SingleOrDefault(p => p.jobID == auth.Employee.jobID);
-
-        }
-        return auth;
-    }
-
-    public Authorization? GetByLogin(string login, string password)
-    {
-        var auth = authContext.Authorizations.AsNoTracking().SingleOrDefault(p => (p.login == login && p.password == password));
-        if (auth.type == "student")
-        {
-            auth.Student = authContext.Students.AsNoTracking().SingleOrDefault(p => p.authToken == auth.authToken);
-            auth.Student.Group = authContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == auth.Student.groupID);
-            var journals = authContext.Journals.AsNoTracking().ToList().Where(p => p.studentID == auth.Student.studentID);
-            foreach (var journal in journals)
-            {
-                var lesson = authContext.Lessons.OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder).AsNoTracking().SingleOrDefault(p => p.lessonID == journal.lessonID);
-                lesson.Addons = authContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
-                lesson.Subject = authContext.Subjects.AsNoTracking().SingleOrDefault(p => p.subjectID == lesson.subjectID);
-                lesson.Teacher = authContext.Teachers.AsNoTracking().SingleOrDefault(p => p.teacherID == lesson.teacherID);
-                journal.Lessons = lesson;
-            }
-            auth.Student.Journal = journals;
-            auth.Student.Payments = authContext.Payments.AsNoTracking().ToList().Where(p => p.studentID == auth.Student.studentID);
-        }
-        else if (auth.type == "teacher")
-        {
-            auth.Teacher = authContext.Teachers.AsNoTracking().SingleOrDefault(p => p.authToken == auth.authToken);
-            auth.Teacher.JobTitles = authContext.JobTitles.AsNoTracking().SingleOrDefault(p => p.jobID == auth.Teacher.jobID);
-            var lessons = authContext.Lessons.AsNoTracking().ToList().Where(p => p.teacherID == auth.Teacher.teacherID).OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder);
-            foreach (var lesson in lessons)
-            {
-                lesson.Addons = authContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
-                lesson.Group = authContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == lesson.groupID);
-                lesson.Subject = authContext.Subjects.AsNoTracking().SingleOrDefault(p => p.subjectID == lesson.subjectID);
-                var journals = authContext.Journals.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
-                foreach (var journal in journals)
-                    journal.Students = authContext.Students.AsNoTracking().SingleOrDefault(p => p.studentID == journal.studentID);
-                journals.OrderBy(p => p.Students.fullNameStudent);
-                lesson.Journals = journals;
-            }
-            auth.Teacher.Lessons = lessons;
-        }
-        else if (auth.type == "employee")
-        {
-            auth.Employee = authContext.Employees.AsNoTracking().SingleOrDefault(p => p.authToken == auth.authToken);
-            auth.Employee.JobTitles = authContext.JobTitles.AsNoTracking().SingleOrDefault(p => p.jobID == auth.Employee.jobID);
-
-        }
-        return auth;
-    }
-
-    public IEnumerable<Authorization> GetByType(string type)
-    {
-        var auths = authContext.Authorizations.AsNoTracking().ToList().Where(p => p.type == type).OrderBy(p => p.authToken);
-        foreach (var auth in auths)
-        {
-            if (auth.type == "student")
-            {
-                auth.Student = authContext.Students.AsNoTracking().SingleOrDefault(p => p.authToken == auth.authToken);
                 auth.Student.Group = authContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == auth.Student.groupID);
                 var journals = authContext.Journals.AsNoTracking().ToList().Where(p => p.studentID == auth.Student.studentID);
                 foreach (var journal in journals)
@@ -262,9 +177,12 @@ public class AuthorizationService
                 auth.Student.Journal = journals;
                 auth.Student.Payments = authContext.Payments.AsNoTracking().ToList().Where(p => p.studentID == auth.Student.studentID);
             }
-            else if (auth.type == "teacher")
+        }
+        else if (auth.type == "teacher")
+        {
+            auth.Teacher = authContext.Teachers.AsNoTracking().SingleOrDefault(p => p.authToken == auth.authToken);
+            if (auth.Teacher is not null)
             {
-                auth.Teacher = authContext.Teachers.AsNoTracking().SingleOrDefault(p => p.authToken == auth.authToken);
                 auth.Teacher.JobTitles = authContext.JobTitles.AsNoTracking().SingleOrDefault(p => p.jobID == auth.Teacher.jobID);
                 var lessons = authContext.Lessons.AsNoTracking().ToList().Where(p => p.teacherID == auth.Teacher.teacherID).OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder);
                 foreach (var lesson in lessons)
@@ -280,10 +198,120 @@ public class AuthorizationService
                 }
                 auth.Teacher.Lessons = lessons;
             }
+        }
+        else if (auth.type == "employee")
+        {
+            auth.Employee = authContext.Employees.AsNoTracking().SingleOrDefault(p => p.authToken == auth.authToken);
+            if (auth.Employee is not null)
+                auth.Employee.JobTitles = authContext.JobTitles.AsNoTracking().SingleOrDefault(p => p.jobID == auth.Employee.jobID);
+
+        }
+        return auth;
+    }
+
+    public Authorization? GetByLogin(string login, string password)
+    {
+        var auth = authContext.Authorizations.AsNoTracking().SingleOrDefault(p => (p.login == login && p.password == password));
+        if (auth.type == "student")
+        {
+            auth.Student = authContext.Students.AsNoTracking().SingleOrDefault(p => p.authToken == auth.authToken);
+            if (auth.Student is not null)
+            {
+                auth.Student.Group = authContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == auth.Student.groupID);
+                var journals = authContext.Journals.AsNoTracking().ToList().Where(p => p.studentID == auth.Student.studentID);
+                foreach (var journal in journals)
+                {
+                    var lesson = authContext.Lessons.OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder).AsNoTracking().SingleOrDefault(p => p.lessonID == journal.lessonID);
+                    lesson.Addons = authContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
+                    lesson.Subject = authContext.Subjects.AsNoTracking().SingleOrDefault(p => p.subjectID == lesson.subjectID);
+                    lesson.Teacher = authContext.Teachers.AsNoTracking().SingleOrDefault(p => p.teacherID == lesson.teacherID);
+                    journal.Lessons = lesson;
+                }
+                auth.Student.Journal = journals;
+                auth.Student.Payments = authContext.Payments.AsNoTracking().ToList().Where(p => p.studentID == auth.Student.studentID);
+            }
+        }
+        else if (auth.type == "teacher")
+        {
+            auth.Teacher = authContext.Teachers.AsNoTracking().SingleOrDefault(p => p.authToken == auth.authToken);
+            if (auth.Teacher is not null)
+            {
+                auth.Teacher.JobTitles = authContext.JobTitles.AsNoTracking().SingleOrDefault(p => p.jobID == auth.Teacher.jobID);
+                var lessons = authContext.Lessons.AsNoTracking().ToList().Where(p => p.teacherID == auth.Teacher.teacherID).OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder);
+                foreach (var lesson in lessons)
+                {
+                    lesson.Addons = authContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
+                    lesson.Group = authContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == lesson.groupID);
+                    lesson.Subject = authContext.Subjects.AsNoTracking().SingleOrDefault(p => p.subjectID == lesson.subjectID);
+                    var journals = authContext.Journals.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
+                    foreach (var journal in journals)
+                        journal.Students = authContext.Students.AsNoTracking().SingleOrDefault(p => p.studentID == journal.studentID);
+                    journals.OrderBy(p => p.Students.fullNameStudent);
+                    lesson.Journals = journals;
+                }
+                auth.Teacher.Lessons = lessons;
+            }
+        }
+        else if (auth.type == "employee")
+        {
+            auth.Employee = authContext.Employees.AsNoTracking().SingleOrDefault(p => p.authToken == auth.authToken);
+            if (auth.Employee is not null)
+                auth.Employee.JobTitles = authContext.JobTitles.AsNoTracking().SingleOrDefault(p => p.jobID == auth.Employee.jobID);
+
+        }
+        return auth;
+    }
+
+    public IEnumerable<Authorization> GetByType(string type)
+    {
+        var auths = authContext.Authorizations.AsNoTracking().ToList().Where(p => p.type == type).OrderBy(p => p.authToken);
+        foreach (var auth in auths)
+        {
+            if (auth.type == "student")
+            {
+                auth.Student = authContext.Students.AsNoTracking().SingleOrDefault(p => p.authToken == auth.authToken);
+                if (auth.Student is not null)
+                {
+                    auth.Student.Group = authContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == auth.Student.groupID);
+                    var journals = authContext.Journals.AsNoTracking().ToList().Where(p => p.studentID == auth.Student.studentID);
+                    foreach (var journal in journals)
+                    {
+                        var lesson = authContext.Lessons.OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder).AsNoTracking().SingleOrDefault(p => p.lessonID == journal.lessonID);
+                        lesson.Addons = authContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
+                        lesson.Subject = authContext.Subjects.AsNoTracking().SingleOrDefault(p => p.subjectID == lesson.subjectID);
+                        lesson.Teacher = authContext.Teachers.AsNoTracking().SingleOrDefault(p => p.teacherID == lesson.teacherID);
+                        journal.Lessons = lesson;
+                    }
+                    auth.Student.Journal = journals;
+                    auth.Student.Payments = authContext.Payments.AsNoTracking().ToList().Where(p => p.studentID == auth.Student.studentID);
+                }
+            }
+            else if (auth.type == "teacher")
+            {
+                auth.Teacher = authContext.Teachers.AsNoTracking().SingleOrDefault(p => p.authToken == auth.authToken);
+                if (auth.Teacher is not null)
+                {
+                    auth.Teacher.JobTitles = authContext.JobTitles.AsNoTracking().SingleOrDefault(p => p.jobID == auth.Teacher.jobID);
+                    var lessons = authContext.Lessons.AsNoTracking().ToList().Where(p => p.teacherID == auth.Teacher.teacherID).OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder);
+                    foreach (var lesson in lessons)
+                    {
+                        lesson.Addons = authContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
+                        lesson.Group = authContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == lesson.groupID);
+                        lesson.Subject = authContext.Subjects.AsNoTracking().SingleOrDefault(p => p.subjectID == lesson.subjectID);
+                        var journals = authContext.Journals.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
+                        foreach (var journal in journals)
+                            journal.Students = authContext.Students.AsNoTracking().SingleOrDefault(p => p.studentID == journal.studentID);
+                        journals.OrderBy(p => p.Students.fullNameStudent);
+                        lesson.Journals = journals;
+                    }
+                    auth.Teacher.Lessons = lessons;
+                }
+            }
             else if (auth.type == "employee")
             {
                 auth.Employee = authContext.Employees.AsNoTracking().SingleOrDefault(p => p.authToken == auth.authToken);
-                auth.Employee.JobTitles = authContext.JobTitles.AsNoTracking().SingleOrDefault(p => p.jobID == auth.Employee.jobID);
+                if (auth.Employee is not null)
+                    auth.Employee.JobTitles = authContext.JobTitles.AsNoTracking().SingleOrDefault(p => p.jobID == auth.Employee.jobID);
 
             }
         }
@@ -512,14 +540,14 @@ public class EventService
         eventContext.SaveChanges();
     }
 
-    public void discriptionUpdate(int id, string newDiscription)
+    public void descriptionUpdate(int id, string newDescription)
     {
         var eventToUpdate = eventContext.Events.Find(id);
 
-        if (eventToUpdate is null || newDiscription is null)
+        if (eventToUpdate is null || newDescription is null)
             throw new InvalidOperationException("There some problem.");
 
-        eventToUpdate.eventDescription = newDiscription;
+        eventToUpdate.eventDescription = newDescription;
 
         eventContext.SaveChanges();
     }
@@ -951,12 +979,12 @@ public class LessonService
         return lessons;
     }
 
-    public Lesson Add(Lesson employee)
+    public Lesson Add(Lesson lesson)
     {
-        lessonContext.Lessons.Add(employee);
+        lessonContext.Lessons.Add(lesson);
         lessonContext.SaveChanges();
 
-        return employee;
+        return lesson;
     }
 
     public void classUpdate(int id, string newClass)
@@ -1446,7 +1474,6 @@ public class SubjectService
     {
         return subjectContext.Subjects.AsNoTracking().SingleOrDefault(p => p.subjectID == id);
     }
-
 
     public Subject Add(Subject subject)
     {
