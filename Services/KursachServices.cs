@@ -3,6 +3,7 @@ using Kursach.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Diagnostics.Eventing.Reader;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Kursach.Services;
 
@@ -1524,6 +1525,30 @@ public class TeacherService
         foreach (var teacher in teachers)
         {
             var lessons = teacherContext.Lessons.AsNoTracking().ToList().Where(p => p.teacherID == teacher.teacherID).OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder);
+            if (lessons is not null)
+            {
+                foreach (var lesson in lessons)
+                {
+                    lesson.Addons = teacherContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
+                    var group = teacherContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == lesson.groupID);
+                    group.Students = teacherContext.Students.AsNoTracking().ToList().Where(p => p.groupID == group.groupID).OrderBy(p => p.fullNameStudent);
+                    lesson.Group = group;
+                    lesson.Subject = teacherContext.Subjects.AsNoTracking().SingleOrDefault(p => p.subjectID == lesson.subjectID);
+                    lesson.Journals = teacherContext.Journals.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
+                }
+                teacher.Lessons = lessons;
+            }
+            teacher.JobTitles = teacherContext.JobTitles.AsNoTracking().SingleOrDefault(p => p.jobID == teacher.jobID);
+        }
+        return teachers;
+    }
+
+    public Teacher? GetById(int id)
+    {
+        var teacher = teacherContext.Teachers.AsNoTracking().SingleOrDefault(p => p.teacherID == id);
+        var lessons = teacherContext.Lessons.AsNoTracking().ToList().Where(p => p.teacherID == teacher.teacherID).OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder);
+        if (lessons is not null)
+        {
             foreach (var lesson in lessons)
             {
                 lesson.Addons = teacherContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
@@ -1534,25 +1559,7 @@ public class TeacherService
                 lesson.Journals = teacherContext.Journals.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
             }
             teacher.Lessons = lessons;
-            teacher.JobTitles = teacherContext.JobTitles.AsNoTracking().SingleOrDefault(p => p.jobID == teacher.jobID);
         }
-        return teachers;
-    }
-
-    public Teacher? GetById(int id)
-    {
-        var teacher = teacherContext.Teachers.AsNoTracking().SingleOrDefault(p => p.teacherID == id);
-        var lessons = teacherContext.Lessons.AsNoTracking().ToList().Where(p => p.teacherID == teacher.teacherID).OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder);
-        foreach (var lesson in lessons)
-        {
-            lesson.Addons = teacherContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
-            var group = teacherContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == lesson.groupID);
-            group.Students = teacherContext.Students.AsNoTracking().ToList().Where(p => p.groupID == group.groupID).OrderBy(p => p.fullNameStudent);
-            lesson.Group = group;
-            lesson.Subject = teacherContext.Subjects.AsNoTracking().SingleOrDefault(p => p.subjectID == lesson.subjectID);
-            lesson.Journals = teacherContext.Journals.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
-        }
-        teacher.Lessons = lessons;
         teacher.JobTitles = teacherContext.JobTitles.AsNoTracking().SingleOrDefault(p => p.jobID == teacher.jobID);
         return teacher;
     }
@@ -1561,16 +1568,19 @@ public class TeacherService
     {
         var teacher = teacherContext.Teachers.AsNoTracking().SingleOrDefault(p => p.authToken == authToken);
         var lessons = teacherContext.Lessons.AsNoTracking().ToList().Where(p => p.teacherID == teacher.teacherID).OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder);
-        foreach (var lesson in lessons)
+        if (lessons is not null)
         {
-            lesson.Addons = teacherContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
-            var group = teacherContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == lesson.groupID);
-            group.Students = teacherContext.Students.AsNoTracking().ToList().Where(p => p.groupID == group.groupID).OrderBy(p => p.fullNameStudent);
-            lesson.Group = group;
-            lesson.Subject = teacherContext.Subjects.AsNoTracking().SingleOrDefault(p => p.subjectID == lesson.subjectID);
-            lesson.Journals = teacherContext.Journals.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
+            foreach (var lesson in lessons)
+            {
+                lesson.Addons = teacherContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
+                var group = teacherContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == lesson.groupID);
+                group.Students = teacherContext.Students.AsNoTracking().ToList().Where(p => p.groupID == group.groupID).OrderBy(p => p.fullNameStudent);
+                lesson.Group = group;
+                lesson.Subject = teacherContext.Subjects.AsNoTracking().SingleOrDefault(p => p.subjectID == lesson.subjectID);
+                lesson.Journals = teacherContext.Journals.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
+            }
+            teacher.Lessons = lessons;
         }
-        teacher.Lessons = lessons;
         teacher.JobTitles = teacherContext.JobTitles.AsNoTracking().SingleOrDefault(p => p.jobID == teacher.jobID);
         return teacher;
     }
@@ -1581,27 +1591,30 @@ public class TeacherService
         foreach (var teacher in teachers)
         {
             var lessons = teacherContext.Lessons.AsNoTracking().ToList().Where(p => p.teacherID == teacher.teacherID).OrderBy(p => p.weekdays).ThenBy(p => p.dayOrder);
-            foreach (var lesson in lessons)
+            if (lessons is not null)
             {
-                lesson.Addons = teacherContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
-                var group = teacherContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == lesson.groupID);
-                group.Students = teacherContext.Students.AsNoTracking().ToList().Where(p => p.groupID == group.groupID).OrderBy(p => p.fullNameStudent);
-                lesson.Group = group;
-                lesson.Subject = teacherContext.Subjects.AsNoTracking().SingleOrDefault(p => p.subjectID == lesson.subjectID);
-                lesson.Journals = teacherContext.Journals.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
+                foreach (var lesson in lessons)
+                {
+                    lesson.Addons = teacherContext.Addons.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
+                    var group = teacherContext.Groups.AsNoTracking().SingleOrDefault(p => p.groupID == lesson.groupID);
+                    group.Students = teacherContext.Students.AsNoTracking().ToList().Where(p => p.groupID == group.groupID).OrderBy(p => p.fullNameStudent);
+                    lesson.Group = group;
+                    lesson.Subject = teacherContext.Subjects.AsNoTracking().SingleOrDefault(p => p.subjectID == lesson.subjectID);
+                    lesson.Journals = teacherContext.Journals.AsNoTracking().ToList().Where(p => p.lessonID == lesson.lessonID);
+                }
+                teacher.Lessons = lessons;
             }
-            teacher.Lessons = lessons;
             teacher.JobTitles = teacherContext.JobTitles.AsNoTracking().SingleOrDefault(p => p.jobID == teacher.jobID);
         }
         return teachers;
     }
 
-    public Teacher Add(Teacher employee)
+    public Teacher Add(Teacher teacher)
     {
-        teacherContext.Teachers.Add(employee);
+        teacherContext.Teachers.Add(teacher);
         teacherContext.SaveChanges();
 
-        return employee;
+        return teacher;
     }
 
     public void nameUpdate(int id, string newName)

@@ -847,7 +847,7 @@ public class StudentController : ControllerBase
     public IActionResult Create(Student newStudent)
     {
         var student = studentService.Add(newStudent);
-        return CreatedAtAction(nameof(GetById), new { id = student!.studentID }, student);
+        return Ok();
     }
 
     [HttpPut("{id}/{parametr}/{value}")]
